@@ -64,7 +64,7 @@ class Mobile_Builder_Public
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-		$this->key         = defined('MOBILE_BUILDER_JWT_SECRET_KEY') ? MOBILE_BUILDER_JWT_SECRET_KEY : "example_key";
+		$this->key         = defined('JWT_AUTH_SECRET_KEY') ? JWT_AUTH_SECRET_KEY : "example_key";
 	}
 
 	/**
@@ -1368,8 +1368,8 @@ class Mobile_Builder_Public
 		$token = $request->get_param('token');
 
 		$fb = new \Facebook\Facebook([
-			'app_id'                => MOBILE_BUILDER_FB_APP_ID,
-			'app_secret'            => MOBILE_BUILDER_FB_APP_SECRET,
+			'app_id'                => FACEBOOK_APP_ID,
+			'app_secret'            => FACEBOOK_APP_SECRET,
 			'default_graph_version' => 'v2.10',
 			//'default_access_token' => '{access-token}', // optional
 		]);
@@ -1834,7 +1834,7 @@ class Mobile_Builder_Public
 		$id = (int) $request['id'];
 
 		if (get_current_user_id() != $id) {
-			return new WP_Error('mobile_builder', __('Sorry, you cannot change info.', "frego-mobile-builder"), array('status' => rest_authorization_required_code()));
+			return new WP_Error('frego_mobile_builder', __('Sorry, you cannot change info.', "frego-mobile-builder"), array('status' => rest_authorization_required_code()));
 		}
 
 		return true;

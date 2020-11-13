@@ -98,7 +98,10 @@ class Mobile_Builder
 	 */
 	private function load_dependencies()
 	{
-
+		/**
+		 * load frego functions
+		 */
+		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/functions.php';
 		/**
 		 * Load function
 		 */

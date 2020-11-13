@@ -92,7 +92,7 @@ class Mobile_Builder_WCFM
 
 		$accept = ['wcfmmp_profile_settings', 'store_name', 'wcfmmp_store_name', '_store_description'];
 
-		if (in_array($key, $accept) || strpos($key, 'mobile_builder') == 0) {
+		if (in_array($key, $accept) || strpos($key, 'frego_mobile_builder') == 0) {
 			return update_user_meta($user_id, $key, $data);
 		}
 
