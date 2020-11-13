@@ -13,7 +13,8 @@
  */
 
 
-class Mobile_Builder_Auth {
+class Mobile_Builder_Auth
+{
 
 	/**
 	 * The ID of this plugin.
@@ -49,12 +50,12 @@ class Mobile_Builder_Auth {
 	 *
 	 * @since      1.0.0
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct($plugin_name, $version)
+	{
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-		$this->namespace   = $plugin_name . '/v' . intval( $version );
-
+		$this->namespace   = $plugin_name . '/v' . intval($version);
 	}
 
 	/**
@@ -62,14 +63,14 @@ class Mobile_Builder_Auth {
 	 *
 	 * @since 1.0.0
 	 */
-	public function add_api_routes() {
+	public function add_api_routes()
+	{
 
-		register_rest_route( $this->namespace, 'auto-login', array(
+		register_rest_route($this->namespace, 'auto-login', array(
 			'methods'             => WP_REST_Server::READABLE,
-			'callback'            => array( $this, 'auto_login' ),
+			'callback'            => array($this, 'auto_login'),
 			'permission_callback' => '__return_true',
-		) );
-
+		));
 	}
 
 	/**
@@ -78,23 +79,24 @@ class Mobile_Builder_Auth {
 	 *
 	 * @param $request
 	 */
-	public function auto_login( $request ) {
+	public function auto_login($request)
+	{
 
-		$theme    = $request->get_param( 'theme' );
-		$currency = $request->get_param( 'currency' );
-		$cart_key = $request->get_param( 'cart-key' );
+		$theme    = $request->get_param('theme');
+		$currency = $request->get_param('currency');
+		$cart_key = $request->get_param('cart-key');
 
 		$user_id = get_current_user_id();
 
-		if ( $user_id > 0 ) {
-			$user = get_user_by( 'id', $user_id );
-			wp_set_current_user( $user_id, $user->user_login );
-			wp_set_auth_cookie( $user_id );
+		if ($user_id > 0) {
+			$user = get_user_by('id', $user_id);
+			wp_set_current_user($user_id, $user->user_login);
+			wp_set_auth_cookie($user_id);
 		} else {
 			wp_logout();
 		}
 
-		wp_redirect( wc_get_checkout_url() . "?mobile=1&theme=$theme&currency=$currency&cart-key=$cart_key" );
+		wp_redirect(wc_get_checkout_url() . "?mobile=1&theme=$theme&currency=$currency&cart-key=$cart_key");
 		exit;
 	}
 
@@ -107,7 +109,8 @@ class Mobile_Builder_Auth {
 	 * @return bool
 	 * @since 1.0.0
 	 */
-	public function user_permissions_check( $request ) {
+	public function user_permissions_check($request)
+	{
 		return true;
 	}
 }

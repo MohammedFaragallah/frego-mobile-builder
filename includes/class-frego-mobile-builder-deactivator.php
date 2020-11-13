@@ -20,7 +20,8 @@
  * @subpackage Mobile_Builder/includes
  * @author     RNLAB <ngocdt@rnlab.io>
  */
-class Mobile_Builder_Deactivator {
+class Mobile_Builder_Deactivator
+{
 
 	/**
 	 * Short Description. (use period)
@@ -29,8 +30,7 @@ class Mobile_Builder_Deactivator {
 	 *
 	 * @since    1.0.0
 	 */
-	public static function deactivate() {
-
+	public static function deactivate()
+	{
 	}
-
 }

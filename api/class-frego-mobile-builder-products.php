@@ -20,7 +20,8 @@
  * @subpackage Mobile_Builder/api
  * @author     RNLAB <ngocdt@rnlab.io>
  */
-class Mobile_Builder_Products {
+class Mobile_Builder_Products
+{
 
 	/**
 	 * The ID of this plugin.
@@ -48,11 +49,11 @@ class Mobile_Builder_Products {
 	 *
 	 * @since      1.0.0
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct($plugin_name, $version)
+	{
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-
 	}
 
 	/**
@@ -60,46 +61,48 @@ class Mobile_Builder_Products {
 	 *
 	 * @since 1.0.0
 	 */
-	public function add_api_routes() {
+	public function add_api_routes()
+	{
 
 		$product = new WC_REST_Products_Controller();
 
-		register_rest_route( 'wc/v3', 'min-max-prices', array(
+		register_rest_route('wc/v3', 'min-max-prices', array(
 			'methods'             => WP_REST_Server::READABLE,
-			'callback'            => array( $this, 'get_min_max_prices' ),
-			'permission_callback' => array( $product, 'get_items_permissions_check' ),
-		) );
+			'callback'            => array($this, 'get_min_max_prices'),
+			'permission_callback' => array($product, 'get_items_permissions_check'),
+		));
 
-		register_rest_route( 'wc/v3', 'term-product-counts', array(
+		register_rest_route('wc/v3', 'term-product-counts', array(
 			'methods'             => WP_REST_Server::READABLE,
-			'callback'            => array( $this, 'get_filtered_term_product_counts' ),
-			'permission_callback' => array( $product, 'get_items_permissions_check' ),
-		) );
+			'callback'            => array($this, 'get_filtered_term_product_counts'),
+			'permission_callback' => array($product, 'get_items_permissions_check'),
+		));
 	}
 
-	public function get_min_max_prices( $request ) {
+	public function get_min_max_prices($request)
+	{
 		global $wpdb;
 
 		$tax_query = array();
 
-		if ( isset( $request['category'] ) && $request['category'] ) {
+		if (isset($request['category']) && $request['category']) {
 			$tax_query[] = array(
 				'relation' => 'AND',
 				array(
 					'taxonomy' => 'product_cat',
 					'field'    => 'cat_id',
-					'terms'    => array( $request['category'] ),
+					'terms'    => array($request['category']),
 				),
 			);
 		}
 
 		$meta_query = array();
 
-		$meta_query = new WP_Meta_Query( $meta_query );
-		$tax_query  = new WP_Tax_Query( $tax_query );
+		$meta_query = new WP_Meta_Query($meta_query);
+		$tax_query  = new WP_Tax_Query($tax_query);
 
-		$meta_query_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
-		$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
+		$meta_query_sql = $meta_query->get_sql('post', $wpdb->posts, 'ID');
+		$tax_query_sql  = $tax_query->get_sql($wpdb->posts, 'ID');
 
 		$sql = "
 			SELECT min( min_price ) as min_price, MAX( max_price ) as max_price
@@ -107,27 +110,28 @@ class Mobile_Builder_Products {
 			WHERE product_id IN (
 				SELECT ID FROM {$wpdb->posts}
 				" . $tax_query_sql['join'] . $meta_query_sql['join'] . "
-				WHERE {$wpdb->posts}.post_type IN ('" . implode( "','", array_map( 'esc_sql', apply_filters( 'woocommerce_price_filter_post_type', array( 'product' ) ) ) ) . "')
+				WHERE {$wpdb->posts}.post_type IN ('" . implode("','", array_map('esc_sql', apply_filters('woocommerce_price_filter_post_type', array('product')))) . "')
 				AND {$wpdb->posts}.post_status = 'publish'
 				" . $tax_query_sql['where'] . $meta_query_sql['where'] . '
 			)';
 
-		$sql = apply_filters( 'woocommerce_price_filter_sql', $sql, $meta_query_sql, $tax_query_sql );
+		$sql = apply_filters('woocommerce_price_filter_sql', $sql, $meta_query_sql, $tax_query_sql);
 
-		return $wpdb->get_row( $sql ); // WPCS: unprepared SQL ok.
+		return $wpdb->get_row($sql); // WPCS: unprepared SQL ok.
 	}
 
-	public function get_filtered_term_product_counts( $request ) {
+	public function get_filtered_term_product_counts($request)
+	{
 		global $wpdb;
 
-		$term_ids = wp_list_pluck( get_terms( $request['taxonomy'], array( 'hide_empty' => '1' ) ), 'term_id' );
+		$term_ids = wp_list_pluck(get_terms($request['taxonomy'], array('hide_empty' => '1')), 'term_id');
 
 		$tax_query  = array();
 		$meta_query = array();
 
-		if ( isset( $request['attrs'] ) && $request['attrs'] ) {
+		if (isset($request['attrs']) && $request['attrs']) {
 			$attrs = $request['attrs'];
-			foreach ( $attrs as $attr ) {
+			foreach ($attrs as $attr) {
 				$tax_query[] = array(
 					'taxonomy' => $attr['taxonomy'],
 					'field'    => $attr['field'],
@@ -136,18 +140,18 @@ class Mobile_Builder_Products {
 			}
 		}
 
-		if ( isset( $request['category'] ) && $request['category'] ) {
+		if (isset($request['category']) && $request['category']) {
 			$tax_query[] = array(
 				'taxonomy' => 'product_cat',
 				'field'    => 'cat_id',
-				'terms'    => array( $request['category'] ),
+				'terms'    => array($request['category']),
 			);
 		}
 
-		$meta_query     = new WP_Meta_Query( $meta_query );
-		$tax_query      = new WP_Tax_Query( $tax_query );
-		$meta_query_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
-		$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
+		$meta_query     = new WP_Meta_Query($meta_query);
+		$tax_query      = new WP_Tax_Query($tax_query);
+		$meta_query_sql = $meta_query->get_sql('post', $wpdb->posts, 'ID');
+		$tax_query_sql  = $tax_query->get_sql($wpdb->posts, 'ID');
 
 		// Generate query.
 		$query           = array();
@@ -162,22 +166,23 @@ class Mobile_Builder_Products {
 		$query['where'] = "
 			WHERE {$wpdb->posts}.post_type IN ( 'product' )
 			AND {$wpdb->posts}.post_status = 'publish'"
-		                  . $tax_query_sql['where'] . $meta_query_sql['where'] .
-		                  'AND terms.term_id IN (' . implode( ',', array_map( 'absint', $term_ids ) ) . ')';
+			. $tax_query_sql['where'] . $meta_query_sql['where'] .
+			'AND terms.term_id IN (' . implode(',', array_map('absint', $term_ids)) . ')';
 
 		$query['group_by'] = 'GROUP BY terms.term_id';
-		$query             = apply_filters( 'woocommerce_get_filtered_term_product_counts_query', $query );
-		$query             = implode( ' ', $query );
+		$query             = apply_filters('woocommerce_get_filtered_term_product_counts_query', $query);
+		$query             = implode(' ', $query);
 
-		return $wpdb->get_results( $query, ARRAY_A );
+		return $wpdb->get_results($query, ARRAY_A);
 	}
 
-	public function woocommerce_rest_product_object_query( $args, $request ) {
+	public function woocommerce_rest_product_object_query($args, $request)
+	{
 		$tax_query = array();
 
-		if ( isset( $request['attrs'] ) && $request['attrs'] ) {
+		if (isset($request['attrs']) && $request['attrs']) {
 			$attrs = $request['attrs'];
-			foreach ( $attrs as $attr ) {
+			foreach ($attrs as $attr) {
 				$tax_query[] = array(
 					'taxonomy' => $attr['taxonomy'],
 					'field'    => $attr['field'],
@@ -186,7 +191,7 @@ class Mobile_Builder_Products {
 			}
 			$args['tax_query'] = $tax_query;
 		}
-		
+
 		return $args;
 	}
 }

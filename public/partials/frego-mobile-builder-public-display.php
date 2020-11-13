@@ -8,8 +8,8 @@
  * @link       https://rnlab.io
  * @since      1.0.0
  *
- * @package    Wp_Auth
- * @subpackage Wp_Auth/public/partials
+ * @package    Mobile_Builder
+ * @subpackage Mobile_Builder/public/partials
  */
 ?>
 

@@ -12,7 +12,8 @@
  * @author     Ngoc Dang
  */
 
-class Mobile_Builder_Gateway_PayPal {
+class Mobile_Builder_Gateway_PayPal
+{
 
 	/**
 	 * The ID of the corresponding WooCommerce Payment Gateway.
@@ -44,8 +45,8 @@ class Mobile_Builder_Gateway_PayPal {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct() {
-
+	public function __construct()
+	{
 	}
 
 	/**
@@ -54,9 +55,9 @@ class Mobile_Builder_Gateway_PayPal {
 	 * @since 1.4.0
 	 * @author Ngoc Dang
 	 */
-	public function rnlab_pre_process_payment($parameters) {
+	public function rnlab_pre_process_payment($parameters)
+	{
 		$parameters['pre_process_result'] = true;
 		return $parameters;
 	}
-
 }

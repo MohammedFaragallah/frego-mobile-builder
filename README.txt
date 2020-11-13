@@ -1,10 +1,7 @@
-=== Mobile builder ===
-Contributors: rnlab
-Donate link: https://rnlab.io
-Tags: mobile builder, app builder, react native, woocommerce mobile app, rnlab, flutter
-Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 4.3
+=== Frego Mobile builder ===
+Contributors: frego
+Donate link: github.com/MohammedFaragallah
+Tags: Frego mobile builder
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.6
@@ -21,13 +18,13 @@ For the individuals who claim physical shops and designers, with OREO you have a
 
 1. Install using the WordPress built-in Plugin installer, or Extract the zip file and drop the contents in the `wp-content/plugins/` directory of your WordPress installation.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to Mobile Builder > Create New Template
+3. Go to Frego Mobile Builder > Create New Template
 4. Press the 'Configure' button.
 5. Now you can drag and drop components from the left panel onto the mobile editor area.
 
 == Frequently Asked Questions ==
 
-**Will Mobile Builder work with RTL or other languages?**
+**Will Frego Mobile Builder work with RTL or other languages?**
 
 Yeah! The app support multi languages
 
@@ -50,11 +47,11 @@ Yeah! The app support multi languages
 
 = 1.2.0 =
 
-* Improved: Allow Authentication user for WP REST API thought mobile-builder
+* Improved: Allow Authentication user for WP REST API thought frego-mobile-builder
 
 = 1.1.9 =
 
-* Fixed: Allow Authentication user for Wcfm and Dokan thought mobile-builder
+* Fixed: Allow Authentication user for Wcfm and Dokan thought frego-mobile-builder
 
 = 1.1.8 =
 
@@ -100,4 +97,3 @@ Yeah! The app support multi languages
 
 = 1.0.0 =
 * Initial release.
-

@@ -20,14 +20,16 @@
  * @subpackage Mobile_Builder/includes
  * @author     RNLAB <ngocdt@rnlab.io>
  */
-class Mobile_Builder_Activator {
+class Mobile_Builder_Activator
+{
 
 	/**
 	 * Active plugin action
 	 *
 	 * @since    1.1.4
 	 */
-	public static function activate() {
+	public static function activate()
+	{
 		// Install database tables.
 		self::create_tables();
 	}
@@ -40,7 +42,8 @@ class Mobile_Builder_Activator {
 	 * @since  1.1.4
 	 * @global $wpdb
 	 */
-	private static function create_tables() {
+	private static function create_tables()
+	{
 		global $wpdb;
 
 		$table_name_templates = $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME;
@@ -52,7 +55,7 @@ class Mobile_Builder_Activator {
 
 		$collate = '';
 
-		if ( $wpdb->has_cap( 'collation' ) ) {
+		if ($wpdb->has_cap('collation')) {
 			$collate = $wpdb->get_charset_collate();
 		}
 
@@ -80,8 +83,8 @@ class Mobile_Builder_Activator {
 		) $collate;";
 
 		// Execute
-		dbDelta( $table_carts );
-		dbDelta( $table_templates );
+		dbDelta($table_carts);
+		dbDelta($table_templates);
 	} // END create_tables()
 
 }

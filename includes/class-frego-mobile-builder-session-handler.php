@@ -1,12 +1,13 @@
 <?php
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 
 /**
  * Session handler class.
  */
-class Mobile_Builder_Session_Handler extends WC_Session {
+class Mobile_Builder_Session_Handler extends WC_Session
+{
 
 	/**
 	 * Table name for cart data.
@@ -32,7 +33,8 @@ class Mobile_Builder_Session_Handler extends WC_Session {
 	/**
 	 * Constructor for the session class.
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		global $wpdb;
 		$this->_table = $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME . '_carts';
 	}
@@ -40,23 +42,24 @@ class Mobile_Builder_Session_Handler extends WC_Session {
 	/**
 	 * Init hooks and session data.
 	 */
-	public function init() {
+	public function init()
+	{
 
 		$this->_cart_expiration = time();
 
 		$customer_id = $this->generate_customer_id();
 
-		if ( ! is_user_logged_in() && isset( $_REQUEST['cart_key'] ) ) {
+		if (!is_user_logged_in() && isset($_REQUEST['cart_key'])) {
 			$customer_id = $_REQUEST['cart_key'];
 		}
 
-		$this->restore_cart( $customer_id );
+		$this->restore_cart($customer_id);
 
-		add_action( 'shutdown', array( $this, 'save_cart' ), 20 );
-		add_action( 'wp_logout', array( $this, 'destroy_cart' ) );
+		add_action('shutdown', array($this, 'save_cart'), 20);
+		add_action('wp_logout', array($this, 'destroy_cart'));
 
-		if ( ! is_user_logged_in() ) {
-			add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ) );
+		if (!is_user_logged_in()) {
+			add_filter('nonce_user_logged_out', array($this, 'nonce_user_logged_out'));
 		}
 	}
 
@@ -66,7 +69,8 @@ class Mobile_Builder_Session_Handler extends WC_Session {
 	 *
 	 * @return string
 	 */
-	public function get_cart_key() {
+	public function get_cart_key()
+	{
 		return $this->_customer_id;
 	}
 
@@ -76,15 +80,15 @@ class Mobile_Builder_Session_Handler extends WC_Session {
 	 *
 	 * @param $customer_id
 	 */
-	public function restore_cart( $customer_id ) {
+	public function restore_cart($customer_id)
+	{
 		global $wpdb;
 
 		$this->_customer_id = $customer_id;
 
-		$value = $wpdb->get_var( $wpdb->prepare( "SELECT cart_value FROM $this->_table WHERE cart_key = %s", $customer_id ) );
+		$value = $wpdb->get_var($wpdb->prepare("SELECT cart_value FROM $this->_table WHERE cart_key = %s", $customer_id));
 
-		$this->_data = maybe_unserialize( $value );
-
+		$this->_data = maybe_unserialize($value);
 	}
 
 	/**
@@ -96,11 +100,12 @@ class Mobile_Builder_Session_Handler extends WC_Session {
 	 *
 	 * @global $wpdb
 	 */
-	public function delete_cart( $customer_id ) {
+	public function delete_cart($customer_id)
+	{
 		global $wpdb;
 
 		// Delete cart from database.
-		$wpdb->delete( $this->_table, array( 'cart_key' => $customer_id ) );
+		$wpdb->delete($this->_table, array('cart_key' => $customer_id));
 	}
 
 	/**
@@ -110,17 +115,18 @@ class Mobile_Builder_Session_Handler extends WC_Session {
 	 *
 	 * @return string
 	 */
-	public function generate_customer_id() {
+	public function generate_customer_id()
+	{
 		$customer_id = '';
 
-		if ( is_user_logged_in() ) {
+		if (is_user_logged_in()) {
 			$customer_id = get_current_user_id();
 		}
 
-		if ( empty( $customer_id ) ) {
+		if (empty($customer_id)) {
 			require_once ABSPATH . 'wp-includes/class-phpass.php';
-			$hasher      = new PasswordHash( 8, false );
-			$customer_id = md5( $hasher->get_random_bytes( 32 ) );
+			$hasher      = new PasswordHash(8, false);
+			$customer_id = md5($hasher->get_random_bytes(32));
 		}
 
 		return $customer_id;
@@ -129,11 +135,12 @@ class Mobile_Builder_Session_Handler extends WC_Session {
 	/**
 	 * Save data.
 	 */
-	public function save_cart() {
+	public function save_cart()
+	{
 
 		global $wpdb;
 
-		if ( $this->_dirty ) {
+		if ($this->_dirty) {
 
 			$wpdb->query(
 				$wpdb->prepare(
@@ -141,7 +148,7 @@ class Mobile_Builder_Session_Handler extends WC_Session {
  					ON DUPLICATE KEY UPDATE `cart_key` = VALUES(`cart_key`), `cart_value` = VALUES(`cart_value`), `cart_expiry` = VALUES(`cart_expiry`)",
 					$this->_customer_id,
 					get_current_blog_id(),
-					maybe_serialize( $this->_data ),
+					maybe_serialize($this->_data),
 					$this->_cart_expiration
 				)
 			);
@@ -153,9 +160,10 @@ class Mobile_Builder_Session_Handler extends WC_Session {
 	/**
 	 * Destroy all cart data.
 	 */
-	public function destroy_cart() {
+	public function destroy_cart()
+	{
 		wc_empty_cart();
-		$this->delete_cart( $this->_customer_id );
+		$this->delete_cart($this->_customer_id);
 		$this->_data  = array();
 		$this->_dirty = false;
 	}
@@ -167,7 +175,8 @@ class Mobile_Builder_Session_Handler extends WC_Session {
 	 *
 	 * @return string
 	 */
-	public function nonce_user_logged_out( $uid ) {
+	public function nonce_user_logged_out($uid)
+	{
 		return $this->_customer_id ? $this->_customer_id : $uid;
 	}
 }
