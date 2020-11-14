@@ -101,6 +101,7 @@ class Mobile_Builder_Public
 		$namespace = $this->plugin_name . '/v' . intval($this->version);
 		$review    = new WC_REST_Product_Reviews_Controller();
 		$customer  = new WC_REST_Customers_Controller();
+		$user = new WP_REST_Users_Controller();
 
 		/**
 		 * @since 1.3.4
@@ -200,11 +201,33 @@ class Mobile_Builder_Public
 			'permission_callback' => '__return_true',
 		));
 
-		register_rest_route($namespace, 'register', array(
-			'methods'             => WP_REST_Server::CREATABLE,
-			'callback'            => array($this, 'register'),
-			'permission_callback' => '__return_true',
-		));
+		register_rest_route(
+			$namespace,
+			'register',
+			array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array($user, 'create_item'),
+					'permission_callback' => function ($request) {
+						$request->set_param('roles', array('customer'));
+
+						// METHOD 2: Be nice and provide an error message
+						// if (!current_user_can('create_users') && $request['roles'] !== array('subscriber')) {
+
+						// 	return new WP_Error(
+						// 		'rest_cannot_create_user',
+						// 		__('Sorry, you are only allowed to create new users with the subscriber role.'),
+						// 		array('status' => rest_authorization_required_code())
+						// 	);
+						// }
+
+						return true;
+					},
+					'args'                => $user->get_endpoint_args_for_item_schema(WP_REST_Server::CREATABLE),
+				),
+				'schema' => array($user, 'get_item_schema'),
+			)
+		);
 
 		register_rest_route($namespace, 'lost-password', array(
 			'methods'             => WP_REST_Server::CREATABLE,
@@ -994,161 +1017,6 @@ class Mobile_Builder_Public
 		}
 
 		return array("message" => __("success!", "frego-mobile-builder"));
-	}
-
-	/**
-	 *  Register new user
-	 *
-	 * @param $request
-	 *
-	 * @return mixed
-	 */
-	public function register($request)
-	{
-		$email      = $request->get_param('email');
-		$name       = $request->get_param('name');
-		$first_name = $request->get_param('first_name');
-		$last_name  = $request->get_param('last_name');
-		$password   = $request->get_param('password');
-		$subscribe  = $request->get_param('subscribe');
-		$role       = $request->get_param('role');
-
-		if (!$role || $role != 'wcfm_vendor') {
-			$role = "customer";
-		}
-
-		$enable_phone_number = $request->get_param('enable_phone_number');
-
-		// Validate email
-		if (!is_email($email) || email_exists($email)) {
-			return new WP_Error(
-				"email",
-				__("Your input email not valid or exist in database.", "frego-mobile-builder"),
-				array(
-					'status' => 403,
-				)
-			);
-		}
-
-		// Validate username
-		if (username_exists($name) || empty($name)) {
-			return new WP_Error(
-				"name",
-				__("Your username exist.", "frego-mobile-builder"),
-				array(
-					'status' => 403,
-				)
-			);
-		}
-
-		// Validate first name
-		if (mb_strlen($first_name) < 2) {
-			return new WP_Error(
-				"first_name",
-				__("First name not valid.", "frego-mobile-builder"),
-				array(
-					'status' => 403,
-				)
-			);
-		}
-
-		// Validate last name
-		if (mb_strlen($last_name) < 2) {
-			return new WP_Error(
-				"last_name",
-				__("Last name not valid.", "frego-mobile-builder"),
-				array(
-					'status' => 403,
-				)
-			);
-		}
-
-		// Validate password
-		if (empty($password)) {
-			return new WP_Error(
-				"password",
-				__("Password is required.", "frego-mobile-builder"),
-				array(
-					'status' => 403,
-				)
-			);
-		}
-
-		$user_id = wp_insert_user(array(
-			"user_pass"    => $password,
-			"user_email"   => $email,
-			"user_login"   => $name,
-			"display_name" => "$first_name $last_name",
-			"first_name"   => $first_name,
-			"last_name"    => $last_name,
-			"role"         => $role,
-
-		));
-
-		if (is_wp_error($user_id)) {
-			$error_code = $user_id->get_error_code();
-
-			return new WP_Error(
-				$error_code,
-				$user_id->get_error_message($error_code),
-				array(
-					'status' => 403,
-				)
-			);
-		}
-
-		// Update phone number
-		if ($enable_phone_number) {
-			$digits_phone     = $request->get_param('digits_phone');
-			$digt_countrycode = $request->get_param('digt_countrycode');
-			$digits_phone_no  = $request->get_param('digits_phone_no');
-
-			// Validate phone
-			if (!$digits_phone || !$digt_countrycode || !$digits_phone_no) {
-				wp_delete_user($user_id);
-
-				return new WP_Error(
-					'number_not_validate',
-					__('Your phone number not validate', "frego-mobile-builder"),
-					array(
-						'status' => 403,
-					)
-				);
-			}
-
-			// Check phone number in database
-			$users = get_users(array(
-				"meta_key"     => "digits_phone",
-				"meta_value"   => $digits_phone,
-				"meta_compare" => "="
-			));
-
-			if (count($users) > 0) {
-				wp_delete_user($user_id);
-
-				return new WP_Error(
-					'phone_number_exist',
-					__("Your phone number already exist in database!", "frego-mobile-builder"),
-					array('status' => 400)
-				);
-			}
-
-			add_user_meta($user_id, 'digt_countrycode', $digt_countrycode, true);
-			add_user_meta($user_id, 'digits_phone_no', $digits_phone_no, true);
-			add_user_meta($user_id, 'digits_phone', $digits_phone, true);
-		}
-
-		// Subscribe
-		add_user_meta($user_id, 'mbd_subscribe', $subscribe, true);
-
-		$user  = get_user_by('id', $user_id);
-		$token = $this->generate_token($user);
-		$data  = array(
-			'token' => $token,
-			'user'  => $this->mbd_get_userdata($user),
-		);
-
-		return $data;
 	}
 
 	public function getUrlContent($url)
