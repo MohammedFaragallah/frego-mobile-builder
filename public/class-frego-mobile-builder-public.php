@@ -163,6 +163,18 @@ class Mobile_Builder_Public
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'login'),
 			'permission_callback' => '__return_true',
+			'args'                => array(
+				'username'      => array(
+					'required'    => true,
+					'type'        => 'string',
+					'description' => 'Login name for the user.'
+				),
+				'password'      => array(
+					'required'    => true,
+					'type'        => 'string',
+					'description' => 'Password for the user.'
+				),
+			),
 		));
 
 		register_rest_route($namespace, 'logout', array(
@@ -251,6 +263,18 @@ class Mobile_Builder_Public
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'change_password'),
 			'permission_callback' => '__return_true',
+			'args'                => array(
+				'password_old'      => array(
+					'required'    => true,
+					'type'        => 'string',
+					"description" => "The plaintext old user password"
+				),
+				'password_new'      => array(
+					'required'    => true,
+					'type'        => 'string',
+					"description" => "The plaintext new user password"
+				),
+			),
 		));
 
 		register_rest_route($namespace, 'update-location', array(
