@@ -106,18 +106,50 @@ class Mobile_Builder_Public
 		 * @since 1.3.4
 		 */
 		register_rest_route($namespace, 'reviews', array(
-			'methods'             => WP_REST_Server::CREATABLE,
-			'callback'            => array($review, 'create_item'),
-			'permission_callback' => '__return_true',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array($review, 'create_item'),
+				'permission_callback' => '__return_true',
+				'args'                => array_merge(
+					array($review, 'get_endpoint_args_for_item_schema')(WP_REST_Server::CREATABLE),
+					array(
+						'product_id'     => array(
+							'required'    => true,
+							'description' => __('Unique identifier for the product.', 'woocommerce'),
+							'type'        => 'integer',
+						),
+						'review'         => array(
+							'required'    => true,
+							'type'        => 'string',
+							'description' => __('Review content.', 'woocommerce'),
+						),
+						'reviewer'       => array(
+							'required'    => true,
+							'type'        => 'string',
+							'description' => __('Name of the reviewer.', 'woocommerce'),
+						),
+						'reviewer_email' => array(
+							'required'    => true,
+							'type'        => 'string',
+							'description' => __('Email of the reviewer.', 'woocommerce'),
+						),
+					)
+				),
+			),
+			'schema' => array($review, 'get_public_item_schema')
 		));
 
 		/**
 		 * @since 1.3.4
 		 */
 		register_rest_route($namespace, 'customers/(?P<id>[\d]+)', array(
-			'methods'             => WP_REST_Server::EDITABLE,
-			'callback'            => array($customer, 'update_item'),
-			'permission_callback' => array($this, 'update_item_permissions_check'),
+			array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array($customer, 'update_item'),
+				'permission_callback' => array($this, 'update_item_permissions_check'),
+				"args" => array($customer, 'get_endpoint_args_for_item_schema')(WP_REST_Server::EDITABLE),
+			),
+			'schema' => array($customer, 'get_item_schema'),
 		));
 
 		register_rest_route($namespace, 'token', array(
@@ -178,6 +210,12 @@ class Mobile_Builder_Public
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'retrieve_password'),
 			'permission_callback' => '__return_true',
+			'args'                => array(
+				'user_login'      => array(
+					'required'    => true,
+					'type'        => 'string',
+				),
+			),
 		));
 
 		register_rest_route($namespace, 'settings', array(
