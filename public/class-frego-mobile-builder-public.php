@@ -841,13 +841,13 @@ class Mobile_Builder_Public
 		$user_login = $request->get_param('user_login');
 
 		if (empty($user_login) || !is_string($user_login)) {
-			$errors->add('empty_username', __('<strong>ERROR</strong>: Enter a username or email address.', "frego-mobile-builder"));
+			$errors->add('empty_username', __('Enter a username or email address.', "frego-mobile-builder"));
 		} elseif (strpos($user_login, '@')) {
 			$user_data = get_user_by('email', trim(wp_unslash($user_login)));
 			if (empty($user_data)) {
 				$errors->add(
 					'invalid_email',
-					__('<strong>ERROR</strong>: There is no account with that username or email address.', "frego-mobile-builder")
+					__('There is no account with that username or email address.', "frego-mobile-builder")
 				);
 			}
 		} else {
@@ -862,7 +862,7 @@ class Mobile_Builder_Public
 		if (!$user_data) {
 			$errors->add(
 				'invalidcombo',
-				__('<strong>ERROR</strong>: There is no account with that username or email address.', "frego-mobile-builder")
+				__('There is no account with that username or email address.', "frego-mobile-builder")
 			);
 
 			return $errors;
