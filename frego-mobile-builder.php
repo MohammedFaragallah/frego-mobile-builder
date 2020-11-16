@@ -28,7 +28,7 @@
 
 // If this file is called directly, abort.
 if (!defined('WPINC')) {
-	die;
+    die;
 }
 
 /**
@@ -48,8 +48,8 @@ define('MOBILE_BUILDER_TABLE_NAME', 'frego_mobile_builder');
  */
 function activate_mobile_builder()
 {
-	require_once plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder-activator.php';
-	Mobile_Builder_Activator::activate();
+    require_once plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder-activator.php';
+    Mobile_Builder_Activator::activate();
 }
 
 /**
@@ -58,8 +58,8 @@ function activate_mobile_builder()
  */
 function deactivate_mobile_builder()
 {
-	require_once plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder-deactivator.php';
-	Mobile_Builder_Deactivator::deactivate();
+    require_once plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder-deactivator.php';
+    Mobile_Builder_Deactivator::deactivate();
 }
 
 register_activation_hook(__FILE__, 'activate_mobile_builder');
@@ -82,9 +82,8 @@ require plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder.php';
  */
 function run_mobile_builder()
 {
-
-	$plugin = new Mobile_Builder();
-	$plugin->run();
+    $plugin = new Mobile_Builder();
+    $plugin->run();
 }
 
 run_mobile_builder();

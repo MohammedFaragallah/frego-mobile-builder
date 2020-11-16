@@ -96,24 +96,24 @@
 
 function create_ACF_meta_in_REST()
 {
-  $postypes_to_exclude = ['acf-field-group', 'acf-field'];
-  $extra_postypes_to_include = ["attachment"];
-  $post_types = array_diff(get_post_types(["_builtin" => false], 'names'), $postypes_to_exclude);
+    $postypes_to_exclude = ['acf-field-group', 'acf-field'];
+    $extra_postypes_to_include = ["attachment"];
+    $post_types = array_diff(get_post_types(["_builtin" => false], 'names'), $postypes_to_exclude);
 
-  array_push($post_types, $extra_postypes_to_include);
+    array_push($post_types, $extra_postypes_to_include);
 
-  foreach ($post_types as $post_type) {
-    register_rest_field($post_type, 'acf', [
+    foreach ($post_types as $post_type) {
+        register_rest_field($post_type, 'acf', [
       'get_callback'    => 'expose_ACF_fields',
       'schema'          => null,
     ]);
-  }
+    }
 }
 
 function expose_ACF_fields($object)
 {
-  $ID = $object['id'];
-  return get_fields($ID);
+    $ID = $object['id'];
+    return get_fields($ID);
 }
 
 /**
@@ -124,29 +124,29 @@ function shipping_class_in_item_name($item_name, $cart_item, $cart_item_key)
 {
 
   // If the page is NOT the Shopping Cart or the Checkout, then return the product title (otherwise continue...)
-  if (!(is_cart() || is_checkout())) {
-    return $item_name;
-  }
+    if (!(is_cart() || is_checkout())) {
+        return $item_name;
+    }
 
-  $product = $cart_item['data']; // Get the WC_Product object instance
+    $product = $cart_item['data']; // Get the WC_Product object instance
   $shipping_class_id = $product->get_shipping_class_id(); // Shipping class ID
   $shipping_class_term = get_term($shipping_class_id, 'product_shipping_class');
 
-  // Return default product title (in case of no Shipping Class)
-  if (empty($shipping_class_id)) {
-    return $item_name;
-  }
+    // Return default product title (in case of no Shipping Class)
+    if (empty($shipping_class_id)) {
+        return $item_name;
+    }
 
-  // If the Shipping Class slug is either of these, then add a prefix and suffix to the output
-  if (($shipping_class_term->slug == 'flat-1995-per') || ($shipping_class_term->slug == 'flat-4999-per')) {
-    $prefix = '$';
-    $suffix = 'each';
-  }
+    // If the Shipping Class slug is either of these, then add a prefix and suffix to the output
+    if (($shipping_class_term->slug == 'flat-1995-per') || ($shipping_class_term->slug == 'flat-4999-per')) {
+        $prefix = '$';
+        $suffix = 'each';
+    }
 
-  $label = __('Shipping Class', 'woocommerce');
+    $label = __('Shipping Class', 'woocommerce');
 
-  // Output the Product Title and the new code which wraps the Shipping Class name
-  return $item_name . '<br>
+    // Output the Product Title and the new code which wraps the Shipping Class name
+    return $item_name . '<br>
 		<p class="item-shipping_class" style="margin:0.25em 0 0; font-size: 0.875em;">
 		<em>' . $label . ': </em>' . $prefix . $shipping_class_term->name . ' ' . $suffix . '</p>';
 }
@@ -195,34 +195,34 @@ function shipping_class_in_item_name($item_name, $cart_item, $cart_item_key)
 add_action('rest_api_init', 'create_ACF_meta_in_REST');
 // add_action('init', 'check_headers', 1);
 add_action('rest_api_init', function () {
-  register_rest_route('frego/v1', 'jwt', array(
+    register_rest_route('frego/v1', 'jwt', array(
     'methods' => WP_REST_Server::CREATABLE,
     'callback' => 'generate_token',
     'permission_callback'   => '__return_true',
   ));
 
-  // register_rest_route('frego/v1', 'settings', array(
-  //   'methods'  => WP_REST_Server::READABLE,
-  //   'callback' => 'settings',
-  //   'permission_callback'   => '__return_true',
-  // ));
+    // register_rest_route('frego/v1', 'settings', array(
+    //   'methods'  => WP_REST_Server::READABLE,
+    //   'callback' => 'settings',
+    //   'permission_callback'   => '__return_true',
+    // ));
 
-  // register_rest_route('frego/v1', 'auto-login', array(
-  //   'methods'             => WP_REST_Server::READABLE,
-  //   'callback'            => 'auto_login',
-  //   'permission_callback' => '__return_true',
-  // ));
+    // register_rest_route('frego/v1', 'auto-login', array(
+    //   'methods'             => WP_REST_Server::READABLE,
+    //   'callback'            => 'auto_login',
+    //   'permission_callback' => '__return_true',
+    // ));
 
-  register_rest_route('frego/v1', '/setting', [
+    register_rest_route('frego/v1', '/setting', [
     'methods'  => WP_REST_Server::READABLE,
     'callback' => function ($request) {
-      $responses = array();
+        $responses = array();
 
-      foreach ($request->get_params() as $key => $value) {
-        $responses += array($key => get_option($key));
-      }
+        foreach ($request->get_params() as $key => $value) {
+            $responses += array($key => get_option($key));
+        }
 
-      return $responses;
+        return $responses;
     },
     'permission_callback' => '__return_true',
   ]);
