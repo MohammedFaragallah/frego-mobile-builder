@@ -74,7 +74,7 @@ class Mobile_Builder
 
         $this->load_dependencies();
         $this->set_locale();
-        $this->define_admin_hooks();
+        // $this->define_admin_hooks();
         $this->define_public_hooks();
         $this->define_product_hooks();
         $this->define_api_hooks();
@@ -232,8 +232,8 @@ class Mobile_Builder
         $this->loader->add_action('woocommerce_order_status_changed', $plugin_api, 'notification_order_status_changed', 10, 3);
 
         // WCFM
-        $wcfm_api = new Mobile_Builder_WCFM($this->get_plugin_name(), $this->get_version());
-        $this->loader->add_action('rest_api_init', $wcfm_api, 'add_api_routes', 10);
+        // $wcfm_api = new Mobile_Builder_WCFM($this->get_plugin_name(), $this->get_version());
+        // $this->loader->add_action('rest_api_init', $wcfm_api, 'add_api_routes', 10);
 
         // Products
         $products_api = new Mobile_Builder_Products($this->get_plugin_name(), $this->get_version());
