@@ -1,7 +1,7 @@
 <div class="demo">
     <?php
     /**
-     * Checkout Form
+     * Checkout Form.
      *
      * This template can be overridden by copying it to yourtheme/woocommerce/checkout/form-checkout.php.
      *
@@ -12,15 +12,14 @@
      * the readme will list any important changes.
      *
      * @see https://docs.woocommerce.com/document/template-structure/
-     * @package WooCommerce/Templates
+     *
      * @version 3.5.0
      */
-
     if (!defined('ABSPATH')) {
         exit;
     }
 
-    $theme = isset($_GET['theme']) ? $_GET['theme'] : "";
+    $theme = isset($_GET['theme']) ? $_GET['theme'] : '';
 
     do_action('woocommerce_before_checkout_form', $checkout);
 
@@ -28,7 +27,7 @@
 
     <form name="checkout" method="post" class="checkout woocommerce-checkout" action="<?php echo esc_url(wc_get_checkout_url()); ?>" enctype="multipart/form-data">
 
-        <?php if ($checkout->get_checkout_fields()) : ?>
+        <?php if ($checkout->get_checkout_fields()) { ?>
 
             <?php do_action('woocommerce_checkout_before_customer_details'); ?>
 
@@ -44,7 +43,7 @@
 
             <?php do_action('woocommerce_checkout_after_customer_details'); ?>
 
-        <?php endif; ?>
+        <?php } ?>
 
         <?php do_action('woocommerce_checkout_before_order_review_heading'); ?>
 

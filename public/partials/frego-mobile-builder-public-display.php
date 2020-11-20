@@ -1,15 +1,11 @@
 <?php
 
 /**
- * Provide a public-facing view for the plugin
+ * Provide a public-facing view for the plugin.
  *
  * This file is used to markup the public-facing aspects of the plugin.
  *
- * @link       https://rnlab.io
- * @since      1.0.0
- *
- * @package    Mobile_Builder
- * @subpackage Mobile_Builder/public/partials
+ * @see       https://rnlab.io
  */
 ?>
 

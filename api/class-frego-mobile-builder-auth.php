@@ -2,41 +2,31 @@
 
 /**
  * The public-facing functionality of the plugin.
- * https://docs.woocommerce.com/wc-apidocs/class-WC_Cart.html
+ * https://docs.woocommerce.com/wc-apidocs/class-WC_Cart.html.
  *
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the public-facing stylesheet and JavaScript.
  *
- * @package    Mobile_Builder
- * @subpackage Mobile_Builder/api
  * @author     RNLAB <ngocdt@rnlab.io>
  */
-
-
 class Mobile_Builder_Auth
 {
-
     /**
      * The ID of this plugin.
      *
-     * @since    1.0.0
-     * @access   private
-     * @var      string $plugin_name The ID of this plugin.
+     * @var string The ID of this plugin.
      */
     private $plugin_name;
 
     /**
      * The version of this plugin.
      *
-     * @since    1.0.0
-     * @access   private
-     * @var      string $version The current version of this plugin.
+     * @var string The current version of this plugin.
      */
     private $version;
 
     /**
-     *
-     * REST API name space
+     * REST API name space.
      *
      * @var string
      */
@@ -46,40 +36,35 @@ class Mobile_Builder_Auth
      * Initialize the class and set its properties.
      *
      * @param string $plugin_name The name of the plugin.
-     * @param string $version The version of this plugin.
-     *
-     * @since      1.0.0
+     * @param string $version     The version of this plugin.
      */
     public function __construct($plugin_name, $version)
     {
         $this->plugin_name = $plugin_name;
-        $this->version     = $version;
-        $this->namespace   = $plugin_name . '/v' . intval($version);
+        $this->version = $version;
+        $this->namespace = $plugin_name.'/v'.intval($version);
     }
 
     /**
-     * Registers a REST API route
-     *
-     * @since 1.0.0
+     * Registers a REST API route.
      */
     public function add_api_routes()
     {
-        register_rest_route($this->namespace, 'auto-login', array(
-            'methods'             => WP_REST_Server::READABLE,
-            'callback'            => array($this, 'auto_login'),
+        register_rest_route($this->namespace, 'auto-login', [
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, 'auto_login'],
             'permission_callback' => '__return_true',
-        ));
+        ]);
     }
 
     /**
-     *
-     * Set user login
+     * Set user login.
      *
      * @param $request
      */
     public function auto_login($request)
     {
-        $theme    = $request->get_param('theme');
+        $theme = $request->get_param('theme');
         $currency = $request->get_param('currency');
         $cart_key = $request->get_param('cart-key');
 
@@ -93,18 +78,16 @@ class Mobile_Builder_Auth
             wp_logout();
         }
 
-        wp_redirect(wc_get_checkout_url() . "?mobile=1&theme=$theme&currency=$currency&cart-key=$cart_key");
+        wp_redirect(wc_get_checkout_url()."?mobile=1&theme={$theme}&currency={$currency}&cart-key={$cart_key}");
         exit;
     }
 
     /**
-     *
-     * Check user logged in
+     * Check user logged in.
      *
      * @param $request
      *
      * @return bool
-     * @since 1.0.0
      */
     public function user_permissions_check($request)
     {

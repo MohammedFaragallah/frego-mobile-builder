@@ -3,11 +3,7 @@
 /**
  * The product-facing functionality of the plugin.
  *
- * @link       https://rnlab.io
- * @since      1.0.0
- *
- * @package    Mobile_Builder
- * @subpackage Mobile_Builder/product
+ * @see       https://rnlab.io
  */
 
 /**
@@ -16,28 +12,21 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the product-facing stylesheet and JavaScript.
  *
- * @package    Mobile_Builder
- * @subpackage Mobile_Builder/product
  * @author     RNLAB <ngocdt@rnlab.io>
  */
 class Mobile_Builder_Product
 {
-
     /**
      * The ID of this plugin.
      *
-     * @since    1.0.0
-     * @access   private
-     * @var      string $plugin_name The ID of this plugin.
+     * @var string The ID of this plugin.
      */
     private $plugin_name;
 
     /**
      * The version of this plugin.
      *
-     * @since    1.0.0
-     * @access   private
-     * @var      string $version The current version of this plugin.
+     * @var string The current version of this plugin.
      */
     private $version;
 
@@ -45,50 +34,44 @@ class Mobile_Builder_Product
      * Initialize the class and set its properties.
      *
      * @param string $plugin_name The name of the plugin.
-     * @param string $version The version of this plugin.
-     *
-     * @since    1.0.0
-     *
+     * @param string $version     The version of this plugin.
      */
     public function __construct($plugin_name, $version)
     {
         $this->plugin_name = $plugin_name;
-        $this->version     = $version;
+        $this->version = $version;
     }
 
     /**
-     * Registers a REST API route
-     *
-     * @since 1.0.0
+     * Registers a REST API route.
      */
     public function add_api_routes()
     {
-        $namespace = $this->plugin_name . '/v' . intval($this->version);
+        $namespace = $this->plugin_name.'/v'.intval($this->version);
 
         $products = new WC_REST_Products_Controller();
 
-        register_rest_route($namespace, 'rating-count', array(
-            'methods'  => 'GET',
-            'callback' => array($this, 'rating_count'),
-            'permission_callback'   => '__return_true',
-        ));
+        register_rest_route($namespace, 'rating-count', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rating_count'],
+            'permission_callback' => '__return_true',
+        ]);
 
-        register_rest_route('wc/v3', 'products-distance', array(
-            'methods'             => 'GET',
-            'callback'            => array($this, 'get_items'),
-            'permission_callback' => array($products, 'get_items_permissions_check'),
-        ));
+        register_rest_route('wc/v3', 'products-distance', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_items'],
+            'permission_callback' => [$products, 'get_items_permissions_check'],
+        ]);
 
-        register_rest_route($namespace, 'variable/(?P<product_id>[a-zA-Z0-9-]+)', array(
-            'methods'  => 'GET',
-            'callback' => array($this, 'product_get_all_variable_data'),
-            'permission_callback'   => '__return_true',
-        ));
+        register_rest_route($namespace, 'variable/(?P<product_id>[a-zA-Z0-9-]+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'product_get_all_variable_data'],
+            'permission_callback' => '__return_true',
+        ]);
     }
 
     /**
-     *
-     * Get list products variable
+     * Get list products variable.
      *
      * @param $request
      *
@@ -99,22 +82,22 @@ class Mobile_Builder_Product
         $product_id = $request->get_param('product_id');
         $handle = new WC_Product_Variable($product_id);
         $variation_attributes = $handle->get_variation_attributes();
-        $variation_attributes_data = array();
-        $variation_attributes_label = array();
+        $variation_attributes_data = [];
+        $variation_attributes_label = [];
         foreach ($variation_attributes as $key => $attribute) {
-            $variation_attributes_result['attribute_' . sanitize_title($key)] = $attribute;
-            $variation_attributes_label['attribute_' . sanitize_title($key)] = $key;
+            $variation_attributes_result['attribute_'.sanitize_title($key)] = $attribute;
+            $variation_attributes_label['attribute_'.sanitize_title($key)] = $key;
         }
-        return array(
+
+        return [
             'variation_attributes_label' => $variation_attributes_label,
             'variation_attributes' => $variation_attributes_result,
-            'available_variations' => $handle->get_available_variations()
-        );
+            'available_variations' => $handle->get_available_variations(),
+        ];
     }
 
     /**
-     *
-     * Get products items
+     * Get products items.
      *
      * @param $request
      *
@@ -128,37 +111,37 @@ class Mobile_Builder_Product
         $lng = $request->get_param('lng');
 
         $productsClass = new WC_REST_Products_Controller();
-        $response      = $productsClass->get_items($request);
+        $response = $productsClass->get_items($request);
 
         if ($lat && $lng) {
-            $ids = array();
+            $ids = [];
             foreach ($response->data as $key => $value) {
                 $ids[] = $value['id'];
             }
 
             // Get all locations
-            $table_name    = $wpdb->prefix . 'gmw_locations';
-            $query         = "SELECT * FROM $table_name WHERE object_id IN (" . implode(',', $ids) . ")";
+            $table_name = $wpdb->prefix.'gmw_locations';
+            $query = "SELECT * FROM {$table_name} WHERE object_id IN (".implode(',', $ids).')';
             $gmw_locations = $wpdb->get_results($query, OBJECT);
 
             // Calculator the distance
             $origins = [];
             foreach ($gmw_locations as $key => $value) {
-                $origins[] = $value->latitude . ',' . $value->longitude;
+                $origins[] = $value->latitude.','.$value->longitude;
             }
 
-            $origin_string       = implode('|', $origins);
-            $destinations_string = "$lat,$lng";
-            $key                 = MOBILE_BUILDER_GOOGLE_API_KEY;
+            $origin_string = implode('|', $origins);
+            $destinations_string = "{$lat},{$lng}";
+            $key = MOBILE_BUILDER_GOOGLE_API_KEY;
 
             $distance_matrix = mobile_builder_distance_matrix($origin_string, $destinations_string, $key);
 
             // map distance matrix to product
             $data = [];
             foreach ($response->data as $key => $item) {
-                $index                   = array_search($item['id'], array_column($gmw_locations, 'object_id'));
+                $index = array_search($item['id'], array_column($gmw_locations, 'object_id'));
                 $item['distance_matrix'] = $distance_matrix[$index];
-                $data[]                  = $item;
+                $data[] = $item;
             }
 
             //			$data[] = array(
@@ -175,13 +158,13 @@ class Mobile_Builder_Product
     }
 
     /**
-     * Force currency for mobile checkout
+     * Force currency for mobile checkout.
      *
-     * @since 1.2.0
+     * @param mixed $client_currency
      */
     public function mbd_wcml_client_currency($client_currency)
     {
-        if (isset($_GET['mobile']) && $_GET['mobile'] == 1 && isset($_GET['currency'])) {
+        if (isset($_GET['mobile']) && 1 == $_GET['mobile'] && isset($_GET['currency'])) {
             $client_currency = $_GET['currency'];
         }
 
@@ -190,7 +173,7 @@ class Mobile_Builder_Product
 
     public function add_value_pa_color($response)
     {
-        $term_id                 = $response->data['id'];
+        $term_id = $response->data['id'];
         $response->data['value'] = sanitize_hex_color(get_term_meta($term_id, 'product_attribute_color', true));
 
         return $response;
@@ -198,9 +181,9 @@ class Mobile_Builder_Product
 
     public function add_value_pa_image($response)
     {
-        $term_id       = $response->data['id'];
+        $term_id = $response->data['id'];
         $attachment_id = absint(get_term_meta($term_id, 'product_attribute_image', true));
-        $image_size    = woo_variation_swatches()->get_option('attribute_image_size');
+        $image_size = woo_variation_swatches()->get_option('attribute_image_size');
 
         $response->data['value'] = wp_get_attachment_image_url(
             $attachment_id,
@@ -214,13 +197,12 @@ class Mobile_Builder_Product
      * @param $request
      *
      * @return array|bool|mixed|WP_Error
-     * @since    1.0.0
      */
     public function rating_count($request)
     {
         $product_id = $request->get_param('product_id');
 
-        $result = wp_cache_get('rating_count' . $product_id, 'rnlab');
+        $result = wp_cache_get('rating_count'.$product_id, 'rnlab');
 
         if ($result) {
             return $result;
@@ -229,45 +211,45 @@ class Mobile_Builder_Product
         if ($product_id) {
             $product = new WC_Product($product_id);
 
-            $result = array(
-                "5" => $product->get_rating_count(5),
-                "4" => $product->get_rating_count(4),
-                "3" => $product->get_rating_count(3),
-                "2" => $product->get_rating_count(2),
-                "1" => $product->get_rating_count(1),
-            );
+            $result = [
+                '5' => $product->get_rating_count(5),
+                '4' => $product->get_rating_count(4),
+                '3' => $product->get_rating_count(3),
+                '2' => $product->get_rating_count(2),
+                '1' => $product->get_rating_count(1),
+            ];
 
-            wp_cache_set('rating_count' . $product_id, $result, 'rnlab');
+            wp_cache_set('rating_count'.$product_id, $result, 'rnlab');
 
             return $result;
         }
 
         return new WP_Error(
-            "product_id",
-            __("Product ID not provider.", "frego-mobile-builder"),
-            array(
+            'product_id',
+            __('Product ID not provider.', 'frego-mobile-builder'),
+            [
                 'status' => 403,
-            )
+            ]
         );
     }
 
     /**
      * @param $response
+     * @param mixed $object
+     * @param mixed $request
      *
      * @return mixed
-     * @since    1.0.0
      */
     public function custom_change_product_response($response, $object, $request)
     {
-
         //		echo $request->get_param('lng');
         //		echo $request->get_param('lat'); die;
 
         $type = $response->data['type'];
 
-        if ($type == 'variable') {
-            $price_min                   = $object->get_variation_price();
-            $price_max                   = $object->get_variation_price('max');
+        if ('variable' == $type) {
+            $price_min = $object->get_variation_price();
+            $price_max = $object->get_variation_price('max');
             $response->data['price_min'] = $price_min;
             $response->data['price_max'] = $price_max;
         }
@@ -276,7 +258,7 @@ class Mobile_Builder_Product
         if (!empty($woocommerce_wpml->multi_currency) && !empty($woocommerce_wpml->settings['currencies_order'])) {
             $price = $response->data['price'];
 
-            if ($type == 'grouped' || $type == 'variable') {
+            if ('grouped' == $type || 'variable' == $type) {
                 foreach ($woocommerce_wpml->settings['currencies_order'] as $currency) {
                     if ($currency != get_option('woocommerce_currency')) {
                         $response->data['from-multi-currency-prices'][$currency]['price'] = $woocommerce_wpml->multi_currency->prices->raw_price_filter(
@@ -295,7 +277,6 @@ class Mobile_Builder_Product
      * @param $response
      *
      * @return mixed
-     * @since    1.0.0
      */
     public function custom_change_product_cat($response)
     {
@@ -308,7 +289,6 @@ class Mobile_Builder_Product
      * @param $title
      *
      * @return string
-     * @since    1.0.0
      */
     public function custom_the_title($title)
     {
@@ -319,14 +299,13 @@ class Mobile_Builder_Product
      * @param $product_data
      *
      * @return mixed
-     * @since    1.0.0
      */
     public function custom_woocommerce_rest_prepare_product_variation_object($product_data)
     {
         global $woocommerce_wpml;
 
         if (!empty($woocommerce_wpml->multi_currency) && !empty($woocommerce_wpml->settings['currencies_order'])) {
-            $product_data->data['multi-currency-prices'] = array();
+            $product_data->data['multi-currency-prices'] = [];
 
             $custom_prices_on = get_post_meta($product_data->data['id'], '_wcml_custom_prices_status', true);
 
@@ -366,24 +345,23 @@ class Mobile_Builder_Product
     }
 
     /**
-     * Pre product attribute
+     * Pre product attribute.
      *
      * @param $response
      * @param $item
      * @param $request
      *
      * @return mixed
-     * @since    1.0.0
      */
     public function custom_woocommerce_rest_prepare_product_attribute($response, $item, $request)
     {
-        $options = get_terms(array(
-            'taxonomy'   => wc_attribute_taxonomy_name($item->attribute_name),
+        $options = get_terms([
+            'taxonomy' => wc_attribute_taxonomy_name($item->attribute_name),
             'hide_empty' => false,
-        ));
+        ]);
 
         foreach ($options as $key => $term) {
-            if ($item->attribute_type == 'color') {
+            if ('color' == $item->attribute_type) {
                 $term->value = sanitize_hex_color(get_term_meta(
                     $term->term_id,
                     'product_attribute_color',
@@ -391,9 +369,9 @@ class Mobile_Builder_Product
                 ));
             }
 
-            if ($item->attribute_type == 'image') {
+            if ('image' == $item->attribute_type) {
                 $attachment_id = absint(get_term_meta($term->term_id, 'product_attribute_image', true));
-                $image_size    = function_exists('woo_variation_swatches') ? woo_variation_swatches()->get_option('attribute_image_size') : 'thumbnail';
+                $image_size = function_exists('woo_variation_swatches') ? woo_variation_swatches()->get_option('attribute_image_size') : 'thumbnail';
 
                 $term->value = wp_get_attachment_image_url(
                     $attachment_id,
@@ -415,7 +393,6 @@ class Mobile_Builder_Product
      * @param $request
      *
      * @return mixed
-     * @since    1.0.0
      */
     public function prepare_product_images($response, $post, $request)
     {
@@ -428,7 +405,7 @@ class Mobile_Builder_Product
         foreach ($response->data['images'] as $key => $image) {
             $image_urls = [];
             foreach ($_wp_additional_image_sizes as $size => $value) {
-                $image_info                                = wp_get_attachment_image_src($image['id'], $size);
+                $image_info = wp_get_attachment_image_src($image['id'], $size);
                 $response->data['images'][$key][$size] = $image_info[0];
             }
         }
@@ -442,7 +419,6 @@ class Mobile_Builder_Product
      * @param $request
      *
      * @return mixed
-     * @since    1.0.0
      */
     public function prepare_product_variation_images($response, $post, $request)
     {
@@ -453,7 +429,7 @@ class Mobile_Builder_Product
         }
 
         foreach ($_wp_additional_image_sizes as $size => $value) {
-            $image_info                       = wp_get_attachment_image_src($response->data['image']['id'], $size);
+            $image_info = wp_get_attachment_image_src($response->data['image']['id'], $size);
             $response->data['image'][$size] = $image_info[0];
         }
 

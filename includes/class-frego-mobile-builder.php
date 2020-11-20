@@ -1,16 +1,12 @@
 <?php
 
 /**
- * The file that defines the core plugin class
+ * The file that defines the core plugin class.
  *
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://rnlab.io
- * @since      1.0.0
- *
- * @package    Mobile_Builder
- * @subpackage Mobile_Builder/includes
+ * @see       https://rnlab.io
  */
 
 /**
@@ -22,39 +18,29 @@
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @since      1.0.0
- * @package    Mobile_Builder
- * @subpackage Mobile_Builder/includes
  * @author     RNLAB <ngocdt@rnlab.io>
  */
 class Mobile_Builder
 {
-
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
      * the plugin.
      *
-     * @since    1.0.0
-     * @access   protected
-     * @var      Mobile_Builder_Loader $loader Maintains and registers all hooks for the plugin.
+     * @var Mobile_Builder_Loader Maintains and registers all hooks for the plugin.
      */
     protected $loader;
 
     /**
      * The unique identifier of this plugin.
      *
-     * @since    1.0.0
-     * @access   protected
-     * @var      string $plugin_name The string used to uniquely identify this plugin.
+     * @var string The string used to uniquely identify this plugin.
      */
     protected $plugin_name;
 
     /**
      * The current version of the plugin.
      *
-     * @since    1.0.0
-     * @access   protected
-     * @var      string $version The current version of the plugin.
+     * @var string The current version of the plugin.
      */
     protected $version;
 
@@ -64,12 +50,10 @@ class Mobile_Builder
      * Set the plugin name and the plugin version that can be used throughout the plugin.
      * Load the dependencies, define the locale, and set the hooks for the admin area and
      * the public-facing side of the site.
-     *
-     * @since    1.0.0
      */
     public function __construct()
     {
-        $this->version     = MOBILE_BUILDER_CONTROL_VERSION;
+        $this->version = MOBILE_BUILDER_CONTROL_VERSION;
         $this->plugin_name = MOBILE_BUILDER_PLUGIN_NAME;
 
         $this->load_dependencies();
@@ -78,6 +62,45 @@ class Mobile_Builder
         $this->define_public_hooks();
         $this->define_product_hooks();
         $this->define_api_hooks();
+    }
+
+    /**
+     * Run the loader to execute all of the hooks with WordPress.
+     */
+    public function run()
+    {
+        $this->loader->run();
+    }
+
+    /**
+     * The name of the plugin used to uniquely identify it within the context of
+     * WordPress and to define internationalization functionality.
+     *
+     * @return string The name of the plugin.
+     */
+    public function get_plugin_name()
+    {
+        return $this->plugin_name;
+    }
+
+    /**
+     * The reference to the class that orchestrates the hooks with the plugin.
+     *
+     * @return Mobile_Builder_Loader Orchestrates the hooks of the plugin.
+     */
+    public function get_loader()
+    {
+        return $this->loader;
+    }
+
+    /**
+     * Retrieve the version number of the plugin.
+     *
+     * @return string The version number of the plugin.
+     */
+    public function get_version()
+    {
+        return $this->version;
     }
 
     /**
@@ -92,78 +115,74 @@ class Mobile_Builder
      *
      * Create an instance of the loader which will be used to register the hooks
      * with WordPress.
-     *
-     * @since    1.0.0
-     * @access   private
      */
     private function load_dependencies()
     {
         /**
-         * load frego functions
+         * load frego functions.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/functions.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'includes/functions.php';
         /**
-         * Load function
+         * Load function.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'helpers/frego-mobile-builder-functions.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'helpers/frego-mobile-builder-functions.php';
 
         /**
-         * Load dependency install by composer
+         * Load dependency install by composer.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/autoload.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'vendor/autoload.php';
 
         /**
          * The class responsible for orchestrating the actions and filters of the
          * core plugin.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-frego-mobile-builder-loader.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'includes/class-frego-mobile-builder-loader.php';
 
         /**
          * The class responsible for defining internationalization functionality
          * of the plugin.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-frego-mobile-builder-i18n.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'includes/class-frego-mobile-builder-i18n.php';
 
         /**
-         * The class responsible for loading payment gateways
+         * The class responsible for loading payment gateways.
+         *
          * @author Ngoc Dang
-         * @since 1.1.0
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/gateways/class-frego-mobile-builder-gateway-paypal.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/gateways/class-frego-mobile-builder-gateway-razorpay.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'includes/gateways/class-frego-mobile-builder-gateway-paypal.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'includes/gateways/class-frego-mobile-builder-gateway-razorpay.php';
 
         /**
          * The class responsible for defining all actions that occur in the admin area.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-frego-mobile-builder-admin.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'admin/class-frego-mobile-builder-admin.php';
 
         /**
          * The class responsible for defining all actions that occur in the public-facing
          * side of the site.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-frego-mobile-builder-public.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'public/class-frego-mobile-builder-public.php';
 
         /**
          * The class responsible for defining all actions that occur in the product-facing
          * side of the site.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'product/class-frego-mobile-builder-product.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'product/class-frego-mobile-builder-product.php';
 
         /**
          * The class responsible for defining all actions that occur in the api
          * side of the site.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'api/class-frego-mobile-builder-auth.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'api/class-frego-mobile-builder-cart.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'api/class-frego-mobile-builder-vendor.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'api/class-frego-mobile-builder-wcfm.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'api/class-frego-mobile-builder-products.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'api/class-frego-mobile-builder-auth.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'api/class-frego-mobile-builder-cart.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'api/class-frego-mobile-builder-vendor.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'api/class-frego-mobile-builder-wcfm.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'api/class-frego-mobile-builder-products.php';
 
         /**
-         * Load library
-         * @since 1.2.3
+         * Load library.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/libraries/class-frego-mobile-builder-public-key.php';
+        require_once plugin_dir_path(dirname(__FILE__)).'includes/libraries/class-frego-mobile-builder-public-key.php';
 
         $this->loader = new Mobile_Builder_Loader();
     }
@@ -173,9 +192,6 @@ class Mobile_Builder
      *
      * Uses the Mobile_Builder_i18n class in order to set the domain and to register the hook
      * with WordPress.
-     *
-     * @since    1.0.0
-     * @access   private
      */
     private function set_locale()
     {
@@ -187,9 +203,6 @@ class Mobile_Builder
     /**
      * Register all of the hooks related to the admin area functionality
      * of the plugin.
-     *
-     * @since    1.0.0
-     * @access   private
      */
     private function define_admin_hooks()
     {
@@ -201,12 +214,11 @@ class Mobile_Builder
         // add_action( 'admin_menu', array( $plugin_admin, 'add_plugin_admin_menu' ) );
 
         // Add plugin action link point to settings page
-        add_filter('plugin_action_links_' . $this->plugin_name . '/' . $this->plugin_name . '.php', array(
+        add_filter('plugin_action_links_'.$this->plugin_name.'/'.$this->plugin_name.'.php', [
             $plugin_admin,
-            'add_plugin_action_links'
-        ));
+            'add_plugin_action_links',
+        ]);
     }
-
 
     private function define_api_hooks()
     {
@@ -244,15 +256,12 @@ class Mobile_Builder
     /**
      * Register all of the hooks related to the public-facing functionality
      * of the plugin.
-     *
-     * @since    1.0.0
-     * @access   private
      */
     private function define_public_hooks()
     {
         $plugin_public = new Mobile_Builder_Public($this->get_plugin_name(), $this->get_version());
 
-        $rnlab_gateways = array();
+        $rnlab_gateways = [];
 
         // Payment Gateway via PayPal Standard
         $gateway_paypal = new Mobile_Builder_Gateway_PayPal();
@@ -264,37 +273,25 @@ class Mobile_Builder
 
         // Register Payment Endpoint for all Gateways
         foreach ($rnlab_gateways as &$rnlab_gateway) {
-            $this->loader->add_filter('rnlab_pre_process_' . $rnlab_gateway->gateway_id . '_payment', $rnlab_gateway, 'rnlab_pre_process_payment');
+            $this->loader->add_filter('rnlab_pre_process_'.$rnlab_gateway->gateway_id.'_payment', $rnlab_gateway, 'rnlab_pre_process_payment');
         }
 
         $this->loader->add_action('rest_api_init', $plugin_public, 'add_api_routes');
         $this->loader->add_filter('determine_current_user', $plugin_public, 'determine_current_user');
 
-        /**
-         * Filter locate template
-         * @since 1.2.0
-         */
+        // Filter locate template
         //		$this->loader->add_filter( 'woocommerce_locate_template', $plugin_public, 'woocommerce_locate_template', 100, 3 );
 
-        /**
-         * Add style for checkout page
-         * @since 1.2.0
-         */
+        // Add style for checkout page
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
 
-        /**
-         * Filter token digits
-         * @since 1.3.3
-         */
+        // Filter token digits
         $this->loader->add_filter('digits_rest_token_data', $plugin_public, 'custom_digits_rest_token_data', 100, 2);
     }
 
     /**
      * Register all of the hooks related to the public-facing functionality
      * of the plugin.
-     *
-     * @since    1.0.0
-     * @access   private
      */
     private function define_product_hooks()
     {
@@ -365,49 +362,5 @@ class Mobile_Builder
         $this->loader->add_filter('woocommerce_rest_prepare_pa_image', $plugin_product, 'add_value_pa_image');
 
         $this->loader->add_filter('wcml_client_currency', $plugin_product, 'mbd_wcml_client_currency');
-    }
-
-    /**
-     * Run the loader to execute all of the hooks with WordPress.
-     *
-     * @since    1.0.0
-     */
-    public function run()
-    {
-        $this->loader->run();
-    }
-
-    /**
-     * The name of the plugin used to uniquely identify it within the context of
-     * WordPress and to define internationalization functionality.
-     *
-     * @return    string    The name of the plugin.
-     * @since     1.0.0
-     */
-    public function get_plugin_name()
-    {
-        return $this->plugin_name;
-    }
-
-    /**
-     * The reference to the class that orchestrates the hooks with the plugin.
-     *
-     * @return    Mobile_Builder_Loader    Orchestrates the hooks of the plugin.
-     * @since     1.0.0
-     */
-    public function get_loader()
-    {
-        return $this->loader;
-    }
-
-    /**
-     * Retrieve the version number of the plugin.
-     *
-     * @return    string    The version number of the plugin.
-     * @since     1.0.0
-     */
-    public function get_version()
-    {
-        return $this->version;
     }
 }

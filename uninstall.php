@@ -19,10 +19,7 @@
  * For more information, see the following discussion:
  * https://github.com/tommcfarlin/WordPress-Plugin-Boilerplate/pull/123#issuecomment-28541913
  *
- * @link       https://rnlab.io
- * @since      1.0.0
- *
- * @package    Mobile_Builder
+ * @see       https://rnlab.io
  */
 
 // If uninstall not called from WordPress, then exit.

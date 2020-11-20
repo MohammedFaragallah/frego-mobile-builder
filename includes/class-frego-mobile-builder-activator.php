@@ -1,13 +1,9 @@
 <?php
 
 /**
- * Fired during plugin activation
+ * Fired during plugin activation.
  *
- * @link       https://rnlab.io
- * @since      1.0.0
- *
- * @package    Mobile_Builder
- * @subpackage Mobile_Builder/includes
+ * @see       https://rnlab.io
  */
 
 /**
@@ -15,18 +11,12 @@
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
- * @since      1.0.0
- * @package    Mobile_Builder
- * @subpackage Mobile_Builder/includes
  * @author     RNLAB <ngocdt@rnlab.io>
  */
 class Mobile_Builder_Activator
 {
-
     /**
-     * Active plugin action
-     *
-     * @since    1.1.4
+     * Active plugin action.
      */
     public static function activate()
     {
@@ -37,21 +27,20 @@ class Mobile_Builder_Activator
     /**
      * Creates database tables which the plugin needs to function.
      *
-     * @access private
      * @static
-     * @since  1.1.4
+     *
      * @global $wpdb
      */
     private static function create_tables()
     {
         global $wpdb;
 
-        $table_name_templates = $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME;
-        $table_name_carts     = $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME . '_carts';
+        $table_name_templates = $wpdb->prefix.MOBILE_BUILDER_TABLE_NAME;
+        $table_name_carts = $wpdb->prefix.MOBILE_BUILDER_TABLE_NAME.'_carts';
 
         $wpdb->hide_errors();
 
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        require_once ABSPATH.'wp-admin/includes/upgrade.php';
 
         $collate = '';
 
@@ -68,7 +57,7 @@ class Mobile_Builder_Activator
 					cart_expiry BIGINT UNSIGNED NOT NULL,
 					PRIMARY KEY (cart_id),
 					UNIQUE KEY cart_key (cart_key)
-				) $collate;";
+				) {$collate};";
 
         // Queries create templates table
         $table_templates = "CREATE TABLE {$table_name_templates} (
@@ -80,10 +69,12 @@ class Mobile_Builder_Activator
 		  date_created DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
 		  date_updated DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
 		  PRIMARY KEY (id)
-		) $collate;";
+		) {$collate};";
 
         // Execute
         dbDelta($table_carts);
         dbDelta($table_templates);
-    } // END create_tables()
+    }
+
+    // END create_tables()
 }
