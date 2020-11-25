@@ -1,0 +1,52 @@
+=== Frego Mobile Builder ===
+Contributors: xwp
+Requires at least: 5.0
+Tested up to: 5.3.2
+Stable tag: 0.0.1
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+WordPress plugin template for extending Gutenberg at XWP.
+
+== Description ==
+
+**Scaffolding**
+
+Use the [`init-plugin.sh`](init-plugin.sh) bash script to scaffold a new plugin. The script will enter an interactive shell on your host machine and copy this plugin while making necessary string replacements:
+
+```bash
+./init-plugin.sh
+```
+
+The `init-plugin.sh` script will be removed from the generated plugin. You should also update your `readme.txt` and add/change any of the config files your project may need, read more about your options in the [`xwp/wp-dev-lib/readme.md`](https://github.com/xwp/wp-dev-lib) file.
+
+**Coveralls Pro**
+
+To use Coveralls Pro with your private repository you will need to change the `service_name` inside `.coveralls.yml` to `travis-pro`, and add the `COVERALLS_REPO_TOKEN` to the settings in Travis CI. If you don't want to use Coveralls then you will need to delete the `.coveralls.yml` and remove `npm run test:js:coveralls` step from the script section in the `.travis.yml` file.
+
+**Adding Classes**
+
+When adding a new class you should instantiate it in `Plugin::init` and inject `Plugin` as a dependency. There is a `Sample` class inside the `php` directory that demonstrates this behavior and how doc hooks work.
+
+== Installation ==
+
+1. Upload the folder to the `/wp-content/plugins/` directory.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+
+== Frequently Asked Questions ==
+
+= A question that someone might have =
+
+An answer to that question.
+
+== Getting Started ==
+
+If you are a developer, we encourage you to [follow along](https://github.com/mohammedfaragallah/frego-mobile-builder) or [contribute](https://github.com/mohammedfaragallah/frego-mobile-builder/contributing.md) to the development of this plugin on GitHub.
+
+== Screenshots ==
+
+1. Look at this demo photo!
+
+== Changelog ==
+
+For the plugin’s changelog, please see [the Releases page on GitHub](https://github.com/mohammedfaragallah/frego-mobile-builder/releases).
