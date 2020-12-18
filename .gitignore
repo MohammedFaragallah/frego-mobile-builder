@@ -11,3 +11,8 @@ local.properties
 .DS_Store
 
 .sass-cache
+
+/wpcs
+/vendor/*
+!/vendor/firebase
+!/vendor/facebook

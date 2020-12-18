@@ -82,7 +82,7 @@ Yeah! The app support multi languages
 * Fixed: Undefined index: lat and lng
 
 = 1.1.2 =
-* Add Import Template from Rnlab App Control
+* Add Import Template from App Control
 * Add Import Template from Oreo fashion app
 * Add Import Template from Lekima app
 

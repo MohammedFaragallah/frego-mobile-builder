@@ -5,7 +5,7 @@
  *
  * @param $method
  * @param $url
- * @param bool $data
+ * @param bool   $data
  *
  * @return bool|string
  */
@@ -52,14 +52,18 @@ function mobile_builder_request($method, $url, $data = false)
  * @param $origin_string
  * @param $destinations_string
  * @param $key
- * @param string $units
+ * @param string              $units
  *
  * @return mixed
  */
-function mobile_builder_distance_matrix($origin_string, $destinations_string, $key, $units = 'metric')
-{
+function mobile_builder_distance_matrix(
+    $origin_string,
+    $destinations_string,
+    $key,
+    $units = 'metric'
+) {
     $google_map_api = 'https://maps.googleapis.com/maps/api';
-    $url = "{$google_map_api}/distancematrix/json?units={$units}&origins={$origin_string}&destinations={$destinations_string}&key={$key}";
+    $url            = "{$google_map_api}/distancematrix/json?units={$units}&origins={$origin_string}&destinations={$destinations_string}&key={$key}";
 
     return json_decode(mobile_builder_request('GET', $url))->rows;
 }
@@ -78,10 +82,14 @@ function mobile_builder_send_notification($fields, $api_key)
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, 'https://onesignal.com/api/v1/notifications');
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json; charset=utf-8',
-        'Authorization: Basic '.$api_key,
-    ]);
+    curl_setopt(
+        $ch,
+        CURLOPT_HTTPHEADER,
+        [
+            'Content-Type: application/json; charset=utf-8',
+            'Authorization: Basic ' . $api_key,
+        ]
+    );
 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HEADER, false);
@@ -96,34 +104,6 @@ function mobile_builder_send_notification($fields, $api_key)
 }
 
 /**
- * Get request headers.
- *
- * @return array|false
- */
-function mobile_builder_headers()
-{
-    if (function_exists('apache_request_headers')) {
-        return apache_request_headers();
-    }
-    $out = [];
-
-    foreach ($_SERVER as $key => $value) {
-        if ('HTTP_' == substr($key, 0, 5)) {
-            $key = str_replace(
-                ' ',
-                '-',
-                ucwords(strtolower(str_replace('_', ' ', substr($key, 5))))
-            );
-            $out[$key] = $value;
-        } else {
-            $out[$key] = $value;
-        }
-    }
-
-    return $out;
-}
-
-/**
  * Returns true if we are making a REST API request for Mobile builder.
  *
  * @return bool
@@ -135,11 +115,11 @@ function mobile_builder_is_rest_api_request()
     }
 
     $rest_prefix = trailingslashit(rest_get_url_prefix());
-    $uri = $_SERVER['REQUEST_URI'];
-    $allows = ['frego-mobile-builder/', 'wcfmmp/', 'dokan/', 'wp/', 'wc/'];
+    $uri         = $_SERVER['REQUEST_URI'];
+    $allows      = [ 'frego-mobile-builder/', 'wcfmmp/', 'dokan/', 'wp/', 'wc/' ];
 
     foreach ($allows as $allow) {
-        $check = false !== strpos($uri, $rest_prefix.$allow);
+        $check = false !== strpos($uri, $rest_prefix . $allow);
         if ($check) {
             return true;
         }

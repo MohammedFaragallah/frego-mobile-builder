@@ -1,14 +1,16 @@
 {
-  "name": "rnlab/wp-app-control",
-  "description": "libs",
+  "name": "o0fre/frego-mobile-builder",
   "authors": [
     {
-      "name": "Ngoc Dang",
-      "email": "ngocdt@rnlab.io"
+      "name": "Mohammed Faragallah",
+      "email": "o0frego0o@hotmail.com"
     }
   ],
   "require": {
     "firebase/php-jwt": "^5.0",
     "facebook/graph-sdk": "^5.7"
+  },
+  "require-dev": {
+    "php-stubs/woocommerce-stubs": "^4.7"
   }
 }

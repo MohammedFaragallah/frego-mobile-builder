@@ -6,22 +6,22 @@
  *
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the public-facing stylesheet and JavaScript.
- *
- * @author     RNLAB <ngocdt@rnlab.io>
  */
 class Mobile_Builder_Auth
 {
+
+
     /**
      * The ID of this plugin.
      *
-     * @var string The ID of this plugin.
+     * @var string the ID of this plugin
      */
     private $plugin_name;
 
     /**
      * The version of this plugin.
      *
-     * @var string The current version of this plugin.
+     * @var string the current version of this plugin
      */
     private $version;
 
@@ -35,14 +35,14 @@ class Mobile_Builder_Auth
     /**
      * Initialize the class and set its properties.
      *
-     * @param string $plugin_name The name of the plugin.
-     * @param string $version     The version of this plugin.
+     * @param string $plugin_name the name of the plugin
+     * @param string $version     the version of this plugin
      */
     public function __construct($plugin_name, $version)
     {
         $this->plugin_name = $plugin_name;
-        $this->version = $version;
-        $this->namespace = $plugin_name.'/v'.intval($version);
+        $this->version     = $version;
+        $this->namespace   = $plugin_name . '/v' . intval($version);
     }
 
     /**
@@ -50,11 +50,16 @@ class Mobile_Builder_Auth
      */
     public function add_api_routes()
     {
-        register_rest_route($this->namespace, 'auto-login', [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'auto_login'],
-            'permission_callback' => '__return_true',
-        ]);
+        register_rest_route(
+            $this->namespace,
+            'auto-login',
+            [
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => [ $this, 'auto_login' ],
+                'permission_callback' => '__return_true',
+                'args'                => array(),
+            ]
+        );
     }
 
     /**
@@ -64,7 +69,7 @@ class Mobile_Builder_Auth
      */
     public function auto_login($request)
     {
-        $theme = $request->get_param('theme');
+        $theme    = $request->get_param('theme');
         $currency = $request->get_param('currency');
         $cart_key = $request->get_param('cart-key');
 
@@ -78,8 +83,11 @@ class Mobile_Builder_Auth
             wp_logout();
         }
 
-        wp_redirect(wc_get_checkout_url()."?mobile=1&theme={$theme}&currency={$currency}&cart-key={$cart_key}");
-        exit;
+        wp_redirect(
+            wc_get_checkout_url() .
+                "?mobile=1&theme={$theme}&currency={$currency}&cart-key={$cart_key}"
+        );
+        exit();
     }
 
     /**

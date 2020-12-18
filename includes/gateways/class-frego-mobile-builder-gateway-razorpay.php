@@ -7,10 +7,14 @@
  */
 class Mobile_Builder_Gateway_Razorpay
 {
+
+
+
+
     /**
      * The ID of the corresponding WooCommerce Payment Gateway.
      *
-     * @var string The ID of the corresponding Gateway.
+     * @var string the ID of the corresponding Gateway
      *
      * @author Ngoc Dang
      */
@@ -19,7 +23,7 @@ class Mobile_Builder_Gateway_Razorpay
     /**
      * The version of this plugin.
      *
-     * @var string The current version of corresponding Gateway.
+     * @var string the current version of corresponding Gateway
      *
      * @author Ngoc Dang
      */
@@ -28,8 +32,8 @@ class Mobile_Builder_Gateway_Razorpay
     /**
      * Initialize the class and set its properties.
      *
-     * @param string $plugin_name The name of the plugin.
-     * @param string $version     The version of this plugin.
+     * @param string $plugin_name the name of the plugin
+     * @param string $version     the version of this plugin
      */
     public function __construct()
     {
@@ -42,7 +46,7 @@ class Mobile_Builder_Gateway_Razorpay
      *
      * @param mixed $parameters
      */
-    public function rnlab_pre_process_payment($parameters)
+    public function pre_process_payment($parameters)
     {
         WC()->session = new WC_Session_Handler();
         WC()->session->init();

@@ -24,7 +24,7 @@
  */
 
 // If this file is called directly, abort.
-if (!defined('WPINC')) {
+if (! defined('WPINC')) {
     die;
 }
 
@@ -45,7 +45,7 @@ define('MOBILE_BUILDER_TABLE_NAME', 'frego_mobile_builder');
  */
 function activate_mobile_builder()
 {
-    require_once plugin_dir_path(__FILE__).'includes/class-frego-mobile-builder-activator.php';
+    require_once plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder-activator.php';
     Mobile_Builder_Activator::activate();
 }
 
@@ -55,7 +55,7 @@ function activate_mobile_builder()
  */
 function deactivate_mobile_builder()
 {
-    require_once plugin_dir_path(__FILE__).'includes/class-frego-mobile-builder-deactivator.php';
+    require_once plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder-deactivator.php';
     Mobile_Builder_Deactivator::deactivate();
 }
 
@@ -66,7 +66,7 @@ register_deactivation_hook(__FILE__, 'deactivate_mobile_builder');
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path(__FILE__).'includes/class-frego-mobile-builder.php';
+require plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder.php';
 
 /**
  * Begins execution of the plugin.

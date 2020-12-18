@@ -5,35 +5,35 @@
  *
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
- *
- * @author     RNLAB <ngocdt@rnlab.io>
  */
 class Mobile_Builder_Admin
 {
+
+
     /**
      * The ID of this plugin.
      *
-     * @var string The ID of this plugin.
+     * @var string the ID of this plugin
      */
     private $plugin_name;
 
     /**
      * The version of this plugin.
      *
-     * @var string The current version of this plugin.
+     * @var string the current version of this plugin
      */
     private $version;
 
     /**
      * Initialize the class and set its properties.
      *
-     * @param string $plugin_name The name of this plugin.
-     * @param string $version     The version of this plugin.
+     * @param string $plugin_name the name of this plugin
+     * @param string $version     the version of this plugin
      */
     public function __construct($plugin_name, $version)
     {
         $this->plugin_name = $plugin_name;
-        $this->version = $version;
+        $this->version     = $version;
     }
 
     /**
@@ -52,14 +52,6 @@ class Mobile_Builder_Admin
          * between the defined hooks and the functions defined in this
          * class.
          */
-
-        wp_enqueue_style(
-            $this->plugin_name,
-            'https://cdnjs.rnlab.io/'.$this->version.'/static/css/main.css',
-            [],
-            $this->version,
-            'all'
-        );
     }
 
     /**
@@ -68,35 +60,17 @@ class Mobile_Builder_Admin
     public function enqueue_scripts()
     {
         /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Wp_Auth_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Wp_Auth_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-        $namespace = $this->plugin_name.'/v'.intval($this->version);
-
+        * This function is provided for demonstration purposes only.
+        *
+        * An instance of this class should be passed to the run() function
+        * defined in Wp_Auth_Loader as all of the hooks are defined
+        * in that particular class.
+        *
+        * The Wp_Auth_Loader will then create the relationship
+        * between the defined hooks and the functions defined in this
+        * class.
+        */
         wp_enqueue_media();
-
-        wp_enqueue_script($this->plugin_name, 'https://cdnjs.rnlab.io/'.$this->version.'/static/js/main.js', [
-            'jquery',
-            'media-upload',
-        ], $this->version, true);
-
-        $license = maybe_unserialize(get_option('mobile_builder_license'));
-
-        wp_localize_script($this->plugin_name, 'wp_rnlab_configs', [
-            'api_nonce' => wp_create_nonce('wp_rest'),
-            'api_url' => rest_url(''),
-            'plugin_name' => $this->plugin_name,
-            'vendor' => 'wcfm',
-            'app' => isset($license['app']) ? $license['app'] : '',
-            'license' => isset($license['license']) ? $license['license'] : '',
-        ]);
     }
 
     /**
@@ -104,65 +78,6 @@ class Mobile_Builder_Admin
      */
     public function add_api_routes()
     {
-        $namespace = $this->plugin_name.'/v'.intval($this->version);
-        $endpoint = 'template-mobile';
-        $endpoint_configs = 'configs';
-
-        register_rest_route($namespace, $endpoint, [
-            [
-                'methods' => \WP_REST_Server::READABLE,
-                'callback' => [$this, 'get_template_config'],
-                'permission_callback' => '__return_true',
-            ],
-        ]);
-
-        register_rest_route($namespace, $endpoint, [
-            [
-                'methods' => \WP_REST_Server::CREATABLE,
-                'callback' => [$this, 'add_template_config'],
-                'permission_callback' => [$this, 'admin_permissions_check'],
-            ],
-        ]);
-
-        register_rest_route($namespace, $endpoint, [
-            [
-                'methods' => \WP_REST_Server::EDITABLE,
-                'callback' => [$this, 'update_template_config'],
-                'permission_callback' => [$this, 'admin_permissions_check'],
-            ],
-        ]);
-
-        register_rest_route($namespace, $endpoint, [
-            [
-                'methods' => \WP_REST_Server::DELETABLE,
-                'callback' => [$this, 'delete_template_config'],
-                'permission_callback' => [$this, 'admin_permissions_check'],
-            ],
-        ]);
-
-        register_rest_route($namespace, $endpoint_configs, [
-            [
-                'methods' => \WP_REST_Server::READABLE,
-                'callback' => [$this, 'get_configs'],
-                'permission_callback' => '__return_true',
-            ],
-        ]);
-
-        register_rest_route($namespace, $endpoint_configs, [
-            [
-                'methods' => \WP_REST_Server::CREATABLE,
-                'callback' => [$this, 'update_configs'],
-                'permission_callback' => [$this, 'admin_permissions_check'],
-            ],
-        ]);
-
-        register_rest_route($namespace, 'license', [
-            [
-                'methods' => \WP_REST_Server::CREATABLE,
-                'callback' => [$this, 'add_license'],
-                'permission_callback' => [$this, 'admin_permissions_check'],
-            ],
-        ]);
     }
 
     /**
@@ -171,7 +86,7 @@ class Mobile_Builder_Admin
     public function template_configs()
     {
         global $wpdb;
-        $table_name = $wpdb->prefix.MOBILE_BUILDER_TABLE_NAME;
+        $table_name = $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME;
 
         return $wpdb->get_results("SELECT * FROM {$table_name}", OBJECT);
     }
@@ -194,14 +109,11 @@ class Mobile_Builder_Admin
     public function add_template_config($request)
     {
         global $wpdb;
-        $table_name = $wpdb->prefix.MOBILE_BUILDER_TABLE_NAME;
+        $table_name = $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME;
 
         $data = $request->get_param('data');
 
-        $results = $wpdb->insert(
-            $table_name,
-            $data
-        );
+        $results = $wpdb->insert($table_name, $data);
 
         return new WP_REST_Response($results, 200);
     }
@@ -214,16 +126,12 @@ class Mobile_Builder_Admin
     public function update_template_config($request)
     {
         global $wpdb;
-        $table_name = $wpdb->prefix.MOBILE_BUILDER_TABLE_NAME;
+        $table_name = $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME;
 
-        $data = $request->get_param('data');
+        $data  = $request->get_param('data');
         $where = $request->get_param('where');
 
-        $results = $wpdb->update(
-            $table_name,
-            $data,
-            $where
-        );
+        $results = $wpdb->update($table_name, $data, $where);
 
         return new WP_REST_Response($results, 200);
     }
@@ -236,14 +144,11 @@ class Mobile_Builder_Admin
     public function delete_template_config($request)
     {
         global $wpdb;
-        $table_name = $wpdb->prefix.MOBILE_BUILDER_TABLE_NAME;
+        $table_name = $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME;
 
         $where = $request->get_param('where');
 
-        $results = $wpdb->delete(
-            $table_name,
-            $where
-        );
+        $results = $wpdb->delete($table_name, $where);
 
         return new WP_REST_Response($results, 200);
     }
@@ -255,11 +160,14 @@ class Mobile_Builder_Admin
      */
     public function get_configs($request)
     {
-        $configs = get_option('mobile_builder_configs', [
-            'requireLogin' => false,
-            'toggleSidebar' => false,
-            'isBeforeNewProduct' => 5,
-        ]);
+        $configs = get_option(
+            'mobile_builder_configs',
+            [
+                'requireLogin'       => false,
+                'toggleSidebar'      => false,
+                'isBeforeNewProduct' => 5,
+            ]
+        );
 
         return new WP_REST_Response(maybe_unserialize($configs), 200);
     }
@@ -274,12 +182,18 @@ class Mobile_Builder_Admin
         $data = $request->get_param('data');
 
         if (get_option('mobile_builder_configs')) {
-            $status = update_option('mobile_builder_configs', maybe_serialize($data));
+            $status = update_option(
+                'mobile_builder_configs',
+                maybe_serialize($data)
+            );
         } else {
-            $status = add_option('mobile_builder_configs', maybe_serialize($data));
+            $status = add_option(
+                'mobile_builder_configs',
+                maybe_serialize($data)
+            );
         }
 
-        return new WP_REST_Response(['status' => $status], 200);
+        return new WP_REST_Response([ 'status' => $status ], 200);
     }
 
     /**
@@ -294,9 +208,12 @@ class Mobile_Builder_Admin
         $license = $request->get_param('data');
 
         delete_option('mobile_builder_license');
-        $status = add_option('mobile_builder_license', maybe_serialize($license));
+        $status = add_option(
+            'mobile_builder_license',
+            maybe_serialize($license)
+        );
 
-        return new WP_REST_Response(['status' => $status], 200);
+        return new WP_REST_Response([ 'status' => $status ], 200);
     }
 
     /**
@@ -320,7 +237,7 @@ class Mobile_Builder_Admin
             __('Mobile Builder', $this->plugin_name),
             'manage_options',
             $this->plugin_name,
-            [$this, 'display_plugin_admin_page']
+            [ $this, 'display_plugin_admin_page' ]
         );
 
         $hook_suffix = add_menu_page(
@@ -328,22 +245,32 @@ class Mobile_Builder_Admin
             __('Mobile Builder', $this->plugin_name),
             'manage_options',
             $this->plugin_name,
-            [$this, 'display_plugin_admin_page'],
+            [ $this, 'display_plugin_admin_page' ],
             'dashicons-excerpt-view'
         );
 
         // Load enqueue styles and script
-        add_action("admin_print_styles-{$hook_suffix}", [$this, 'enqueue_styles']);
-        add_action("admin_print_scripts-{$hook_suffix}", [$this, 'enqueue_scripts']);
+        add_action(
+            "admin_print_styles-{$hook_suffix}",
+            [
+                $this,
+                'enqueue_styles',
+            ]
+        );
+        add_action(
+            "admin_print_scripts-{$hook_suffix}",
+            [
+                $this,
+                'enqueue_scripts',
+            ]
+        );
     }
 
     /**
      * Render the settings page for this plugin.
      */
-    public function display_plugin_admin_page()
-    {
-        ?>
-		<div id="wp-rnlab"></div><?php
+    public function display_plugin_admin_page() {       ?>
+<?php
     }
 
     /**
@@ -355,7 +282,13 @@ class Mobile_Builder_Admin
     {
         return array_merge(
             [
-                'settings' => '<a href="'.admin_url('options-general.php?page='.$this->plugin_name).'">'.__('Settings', $this->plugin_name).'</a>',
+                'settings' => '<a href="' .
+                    admin_url(
+                        'options-general.php?page=' . $this->plugin_name
+                    ) .
+                    '">' .
+                    __('Settings', $this->plugin_name) .
+                    '</a>',
             ],
             $links
         );

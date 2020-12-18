@@ -6,22 +6,22 @@
  *
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the public-facing stylesheet and JavaScript.
- *
- * @author     RNLAB <ngocdt@rnlab.io>
  */
 class Mobile_Builder_Cart
 {
+
+
     /**
      * The ID of this plugin.
      *
-     * @var string The ID of this plugin.
+     * @var string the ID of this plugin
      */
     private $plugin_name;
 
     /**
      * The version of this plugin.
      *
-     * @var string The current version of this plugin.
+     * @var string the current version of this plugin
      */
     private $version;
 
@@ -30,14 +30,14 @@ class Mobile_Builder_Cart
     /**
      * Initialize the class and set its properties.
      *
-     * @param string $plugin_name The name of the plugin.
-     * @param string $version     The version of this plugin.
+     * @param string $plugin_name the name of the plugin
+     * @param string $version     the version of this plugin
      */
     public function __construct($plugin_name, $version)
     {
         $this->plugin_name = $plugin_name;
-        $this->version = $version;
-        $this->namespace = $plugin_name.'/v'.intval($version);
+        $this->version     = $version;
+        $this->namespace   = $plugin_name . '/v' . intval($version);
     }
 
     /**
@@ -45,105 +45,133 @@ class Mobile_Builder_Cart
      */
     public function add_api_routes()
     {
-        register_rest_route($this->namespace, 'cart', [
+        register_rest_route(
+            $this->namespace,
+            'cart',
             [
-                'methods' => WP_REST_Server::READABLE,
-                'callback' => [$this, 'get_cart'],
-                'permission_callback' => [$this, 'user_permissions_check'],
-            ],
+                [
+                    'methods'             => WP_REST_Server::READABLE,
+                    'callback'            => [ $this, 'get_cart' ],
+                    'permission_callback' => [ $this, 'user_permissions_check' ],
+                    'args'                => array(),
+
+                ],
+                [
+                    'methods'             => WP_REST_Server::CREATABLE,
+                    'callback'            => [ $this, 'add_to_cart' ],
+                    'permission_callback' => [ $this, 'user_permissions_check' ],
+                    'args'                => array(),
+                ],
+            ]
+        );
+
+        register_rest_route(
+            $this->namespace,
+            'update-shipping',
             [
-                'methods' => WP_REST_Server::CREATABLE,
-                'callback' => [$this, 'add_to_cart'],
-                'permission_callback' => [$this, 'user_permissions_check'],
-            ],
-        ]);
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [ $this, 'update_shipping' ],
+                'permission_callback' => [ $this, 'user_permissions_check' ],
+                'args'                => array(),
 
-        register_rest_route($this->namespace, 'update-shipping', [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'update_shipping'],
-            'permission_callback' => [$this, 'user_permissions_check'],
-        ]);
+            ]
+        );
 
-        register_rest_route($this->namespace, 'update-order-review', [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'update_order_review'],
-            'permission_callback' => [$this, 'user_permissions_check'],
-        ]);
+        register_rest_route(
+            $this->namespace,
+            'update-order-review',
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [ $this, 'update_order_review' ],
+                'permission_callback' => [ $this, 'user_permissions_check' ],
+                'args'                => array(),
 
-        register_rest_route($this->namespace, 'checkout', [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'checkout'],
-            'permission_callback' => [$this, 'user_permissions_check'],
-        ]);
+            ]
+        );
 
-        register_rest_route($this->namespace, 'cart-total', [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'get_total'],
-            'permission_callback' => [$this, 'user_permissions_check'],
-        ]);
+        register_rest_route(
+            $this->namespace,
+            'checkout',
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [ $this, 'checkout' ],
+                'permission_callback' => [ $this, 'user_permissions_check' ],
+                'args'                => array(),
 
-        register_rest_route($this->namespace, 'shipping-methods', [
-            'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'shipping_methods'],
-            'permission_callback' => [$this, 'user_permissions_check'],
-        ]);
+            ]
+        );
 
-        register_rest_route($this->namespace, 'set-quantity', [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'set_quantity'],
-            'permission_callback' => [$this, 'user_permissions_check'],
-        ]);
+        register_rest_route(
+            $this->namespace,
+            'cart-total',
+            [
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => [ $this, 'get_total' ],
+                'permission_callback' => [ $this, 'user_permissions_check' ],
+                'args'                => array(),
 
-        register_rest_route($this->namespace, 'remove-cart-item', [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'remove_cart_item'],
-            'permission_callback' => [$this, 'user_permissions_check'],
-        ]);
+            ]
+        );
 
-        register_rest_route($this->namespace, 'add-discount', [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'add_discount'],
-            'permission_callback' => [$this, 'user_permissions_check'],
-        ]);
+        register_rest_route(
+            $this->namespace,
+            'shipping-methods',
+            [
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => [ $this, 'shipping_methods' ],
+                'permission_callback' => [ $this, 'user_permissions_check' ],
+                'args'                => array(),
 
-        register_rest_route($this->namespace, 'remove-coupon', [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'remove_coupon'],
-            'permission_callback' => [$this, 'user_permissions_check'],
-        ]);
+            ]
+        );
 
-        register_rest_route($this->namespace, 'analytic', [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'analytic'],
-            'permission_callback' => '__return_true',
-        ]);
-    }
+        register_rest_route(
+            $this->namespace,
+            'set-quantity',
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [ $this, 'set_quantity' ],
+                'permission_callback' => [ $this, 'user_permissions_check' ],
+                'args'                => array(),
 
-    public function analytic($request)
-    {
-        $headers = mobile_builder_headers();
+            ]
+        );
 
-        $data = [
-            'authStatus' => false,
-            'WooCommerce' => false,
-            'wcfm' => class_exists('WCFM'),
-            'jwtAuthKey' => defined('JWT_AUTH_SECRET_KEY'),
-            'googleMapApiKey' => defined('MOBILE_BUILDER_GOOGLE_API_KEY'),
-            'facebookAppId' => defined('FACEBOOK_APP_ID'),
-            'facebookAppSecret' => defined('MOBILE_BUILDER_FB_APP_SECRET'),
-            'oneSignalId' => defined('MOBILE_BUILDER_ONESIGNAL_APP_ID'),
-            'oneSignalApiKey' => defined('MOBILE_BUILDER_ONESIGNAL_API_KEY'),
-        ];
+        register_rest_route(
+            $this->namespace,
+            'remove-cart-item',
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [ $this, 'remove_cart_item' ],
+                'permission_callback' => [ $this, 'user_permissions_check' ],
+                'args'                => array(),
 
-        if (isset($headers['Authorization']) && 'Bearer test' == $headers['Authorization']) {
-            $data['authStatus'] = true;
-        }
+            ]
+        );
 
-        if (class_exists('WooCommerce')) {
-            $data['WooCommerce'] = true;
-        }
+        register_rest_route(
+            $this->namespace,
+            'add-discount',
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [ $this, 'add_discount' ],
+                'permission_callback' => [ $this, 'user_permissions_check' ],
+                'args'                => array(),
 
-        return $data;
+            ]
+        );
+
+        register_rest_route(
+            $this->namespace,
+            'remove-coupon',
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [ $this, 'remove_coupon' ],
+                'permission_callback' => [ $this, 'user_permissions_check' ],
+                'args'                => array(),
+
+            ]
+        );
     }
 
     /**
@@ -153,9 +181,9 @@ class Mobile_Builder_Cart
     {
         global $wpdb;
 
-        $table = $wpdb->prefix.MOBILE_BUILDER_TABLE_NAME.'_carts';
+        $table = $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME . '_carts';
 
-        if (!isset($_REQUEST['cart-key'])) {
+        if (! isset($_REQUEST['cart-key'])) {
             return;
         }
 
@@ -167,7 +195,12 @@ class Mobile_Builder_Cart
 
         $cart_key = trim(wp_unslash($_REQUEST['cart-key']));
 
-        $value = $wpdb->get_var($wpdb->prepare("SELECT cart_value FROM {$table} WHERE cart_key = %s", $cart_key));
+        $value = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT cart_value FROM {$table} WHERE cart_key = %s",
+                $cart_key
+            )
+        );
 
         $cart_data = maybe_unserialize($value);
 
@@ -175,15 +208,36 @@ class Mobile_Builder_Cart
         WC()->cart->empty_cart();
 
         // Set new cart data
-        WC()->session->set('cart', maybe_unserialize($cart_data['cart']));
-        WC()->session->set('cart_totals', maybe_unserialize($cart_data['cart_totals']));
-        WC()->session->set('applied_coupons', maybe_unserialize($cart_data['applied_coupons']));
-        WC()->session->set('coupon_discount_totals', maybe_unserialize($cart_data['coupon_discount_totals']));
-        WC()->session->set('coupon_discount_tax_totals', maybe_unserialize($cart_data['coupon_discount_tax_totals']));
-        WC()->session->set('removed_cart_contents', maybe_unserialize($cart_data['removed_cart_contents']));
-        WC()->session->set('customer', maybe_unserialize($cart_data['customer']));
+        WC()->session->set(
+            'cart',
+            maybe_unserialize($cart_data['cart'])
+        );
+        WC()->session->set(
+            'cart_totals',
+            maybe_unserialize($cart_data['cart_totals'])
+        );
+        WC()->session->set(
+            'applied_coupons',
+            maybe_unserialize($cart_data['applied_coupons'])
+        );
+        WC()->session->set(
+            'coupon_discount_totals',
+            maybe_unserialize($cart_data['coupon_discount_totals'])
+        );
+        WC()->session->set(
+            'coupon_discount_tax_totals',
+            maybe_unserialize($cart_data['coupon_discount_tax_totals'])
+        );
+        WC()->session->set(
+            'removed_cart_contents',
+            maybe_unserialize($cart_data['removed_cart_contents'])
+        );
+        WC()->session->set(
+            'customer',
+            maybe_unserialize($cart_data['customer'])
+        );
 
-        if (!session_id()) {
+        if (! session_id()) {
             session_start();
         }
         $_SESSION['cart-key'] = $cart_key;
@@ -196,15 +250,18 @@ class Mobile_Builder_Cart
      */
     public function handle_checkout_success($order_id)
     {
-        if (!session_id()) {
+        if (! session_id()) {
             session_start();
         }
 
-        if (!is_null($_SESSION['cart-key'])) {
+        if (! is_null($_SESSION['cart-key'])) {
             global $wpdb;
 
             // Delete cart from database.
-            $wpdb->delete($wpdb->prefix.MOBILE_BUILDER_TABLE_NAME.'_carts', ['cart_key' => $_SESSION['cart-key']]);
+            $wpdb->delete(
+                $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME . '_carts',
+                [ 'cart_key' => $_SESSION['cart-key'] ]
+            );
 
             // unset cart key in session
             unset($_SESSION['cart-key']);
@@ -221,22 +278,31 @@ class Mobile_Builder_Cart
      */
     public function mobile_builder_pre_car_rest_api()
     {
-        if (defined('WC_VERSION') && version_compare(WC_VERSION, '3.6.0', '>=') && WC()->is_rest_api_request()) {
-            require_once WC_ABSPATH.'includes/wc-cart-functions.php';
-            require_once WC_ABSPATH.'includes/wc-notice-functions.php';
+        if (
+            defined('WC_VERSION') &&
+            version_compare(WC_VERSION, '3.6.0', '>=') &&
+            WC()->is_rest_api_request()
+        ) {
+            require_once WC_ABSPATH . 'includes/wc-cart-functions.php';
+            require_once WC_ABSPATH . 'includes/wc-notice-functions.php';
 
-            require_once plugin_dir_path(dirname(__FILE__)).'includes/class-frego-mobile-builder-session-handler.php';
+            require_once plugin_dir_path(dirname(__FILE__)) .
+              'includes/class-frego-mobile-builder-session-handler.php';
 
             // Disable cookie authentication REST check and only if site is secure.
             if (is_ssl()) {
-                remove_filter('rest_authentication_errors', 'rest_cookie_check_errors', 100);
+                remove_filter(
+                    'rest_authentication_errors',
+                    'rest_cookie_check_errors',
+                    100
+                );
             }
 
             if (is_null(WC()->session)) {
                 $session_class = 'Mobile_Builder_Session_Handler';
 
                 if (false === strpos($session_class, '\\')) {
-                    $session_class = '\\'.$session_class;
+                    $session_class = '\\' . $session_class;
                 }
 
                 WC()->session = new $session_class();
@@ -248,15 +314,15 @@ class Mobile_Builder_Cart
                 $customer_id = strval(get_current_user_id());
 
                 // If the ID is not ZERO, then the user is logged in.
-                //				if ( $customer_id > 0 ) {
-                //					WC()->customer = new WC_Customer( $customer_id ); // Loads from database.
-                //				} else {
-                //					WC()->customer = new WC_Customer( $customer_id, true ); // Loads from session.
-                //				}
+                // if ( $customer_id > 0 ) {
+                // WC()->customer = new WC_Customer( $customer_id ); // Loads from database.
+                // } else {
+                // WC()->customer = new WC_Customer( $customer_id, true ); // Loads from session.
+                // }
 
                 WC()->customer = new WC_Customer($customer_id, true); // Loads from session
 
-                add_action('shutdown', [WC()->customer, 'save'], 10);
+                add_action('shutdown', [ WC()->customer, 'save' ], 10);
             }
 
             // Init cart if null
@@ -273,41 +339,54 @@ class Mobile_Builder_Cart
      */
     public function get_cart()
     {
-        //		WC()->cart->calculate_totals();
-        //		WC()->cart->calculate_shipping();
+        // WC()->cart->calculate_totals();
+        // WC()->cart->calculate_shipping();
 
         $items = WC()->cart->get_cart();
 
         foreach ($items as $cart_item_key => $cart_item) {
-            $_product = $cart_item['data'];
+            $_product  = $cart_item['data'];
             $vendor_id = '';
 
             if (function_exists('wcfm_get_vendor_id_by_post')) {
                 $vendor_id = wcfm_get_vendor_id_by_post($_product->get_id());
             }
 
-            $image = wp_get_attachment_image_src(get_post_thumbnail_id($_product->get_id()), 'single-post-thumbnail');
-            if ($_product && $_product->exists() && $cart_item['quantity'] > 0) {
+            $image = wp_get_attachment_image_src(
+                get_post_thumbnail_id($_product->get_id()),
+                'single-post-thumbnail'
+            );
+            if (
+                $_product &&
+                $_product->exists() &&
+                $cart_item['quantity'] > 0
+            ) {
                 if (WC()->cart->display_prices_including_tax()) {
                     $product_price = wc_get_price_including_tax($_product);
                 } else {
                     $product_price = wc_get_price_excluding_tax($_product);
                 }
 
-                $items[$cart_item_key]['thumbnail'] = $_product->get_image();
-                $items[$cart_item_key]['thumb'] = $image[0];
-                $items[$cart_item_key]['is_sold_individually'] = $_product->is_sold_individually();
-                $items[$cart_item_key]['name'] = $_product->get_name();
-                $items[$cart_item_key]['price'] = $product_price;
-                $items[$cart_item_key]['price_html'] = WC()->cart->get_product_price($_product);
-                $items[$cart_item_key]['vendor_id'] = $vendor_id;
-                $items[$cart_item_key]['store'] = $vendor_id ? $store_user = get_user_meta($vendor_id, 'wcfmmp_profile_settings', true) : null;
+                $items[ $cart_item_key ]['thumbnail']            = $_product->get_image();
+                $items[ $cart_item_key ]['thumb']                = $image[0];
+                $items[ $cart_item_key ]['is_sold_individually'] = $_product->is_sold_individually();
+                $items[ $cart_item_key ]['name']                 = $_product->get_name();
+                $items[ $cart_item_key ]['price']                = $product_price;
+                $items[ $cart_item_key ]['price_html']           = WC()->cart->get_product_price($_product);
+                $items[ $cart_item_key ]['vendor_id']            = $vendor_id;
+                $items[ $cart_item_key ]['store']                = $vendor_id
+                    ? ($store_user                              = get_user_meta(
+                        $vendor_id,
+                        'wcfmmp_profile_settings',
+                        true
+                    ))
+                    : null;
             }
         }
 
         return [
-            'items' => $items,
-            'totals' => WC()->cart->get_totals(),
+            'items'   => $items,
+            'totals'  => WC()->cart->get_totals(),
             'coupons' => WC()->cart->get_applied_coupons(),
         ];
     }
@@ -322,45 +401,66 @@ class Mobile_Builder_Cart
     public function add_to_cart($request)
     {
         try {
-            $product_id = $request->get_param('product_id');
-            $quantity = $request->get_param('quantity');
-            $variation_id = $request->get_param('variation_id');
-            $variation = $request->get_param('variation');
+            $product_id     = $request->get_param('product_id');
+            $quantity       = $request->get_param('quantity');
+            $variation_id   = $request->get_param('variation_id');
+            $variation      = $request->get_param('variation');
             $cart_item_data = $request->get_param('cart_item_data');
 
             $product_addons = [
-                'quantity' => $quantity,
+                'quantity'    => $quantity,
                 'add-to-cart' => $product_id,
             ];
 
             // Prepare data validate add-ons
-            if (!is_null($cart_item_data['addons'])) {
+            if (! is_null($cart_item_data['addons'])) {
                 foreach ($cart_item_data['addons'] as $addon) {
-                    $product_addons['addon-'.$addon['field_name']][] = $addon['value'];
+                    $product_addons[ 'addon-' . $addon['field_name'] ][] =
+                        $addon['value'];
                 }
             }
 
-            $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $quantity, $product_addons);
+            $passed_validation = apply_filters(
+                'woocommerce_add_to_cart_validation',
+                true,
+                $product_id,
+                $quantity,
+                $product_addons
+            );
 
             if ($passed_validation) {
-                $cart_item_key = WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation, $cart_item_data);
+                $cart_item_key = WC()->cart->add_to_cart(
+                    $product_id,
+                    $quantity,
+                    $variation_id,
+                    $variation,
+                    $cart_item_data
+                );
             }
 
-            if (!$passed_validation || !$cart_item_key) {
-                //if validation failed or add to cart failed, return response from woocommerce
-                return new WP_Error('add_to_cart', htmlspecialchars_decode(strip_tags(wc_print_notices(true))), [
-                    'status' => 403,
-                ]);
+            if (! $passed_validation || ! $cart_item_key) {
+                // if validation failed or add to cart failed, return response from woocommerce
+                return new WP_Error(
+                    'add_to_cart',
+                    htmlspecialchars_decode(strip_tags(wc_print_notices(true))),
+                    [
+                        'status' => 403,
+                    ]
+                );
             }
 
             return [
                 'cart_key' => WC()->session->get_cart_key(),
             ];
         } catch (\Exception $e) {
-            //do something when exception is thrown
-            return new WP_Error('add_to_cart', $e->getMessage(), [
-                'status' => 403,
-            ]);
+            // do something when exception is thrown
+            return new WP_Error(
+                'add_to_cart',
+                $e->getMessage(),
+                [
+                    'status' => 403,
+                ]
+            );
         }
     }
 
@@ -373,12 +473,16 @@ class Mobile_Builder_Cart
      */
     public function update_shipping($request)
     {
-        $posted_shipping_methods = $request->get_param('shipping_method') ? wc_clean(wp_unslash($request->get_param('shipping_method'))) : [];
-        $chosen_shipping_methods = WC()->session->get('chosen_shipping_methods');
+        $posted_shipping_methods = $request->get_param('shipping_method')
+            ? wc_clean(wp_unslash($request->get_param('shipping_method')))
+            : [];
+        $chosen_shipping_methods = WC()->session->get(
+            'chosen_shipping_methods'
+        );
 
         if (is_array($posted_shipping_methods)) {
             foreach ($posted_shipping_methods as $i => $value) {
-                $chosen_shipping_methods[$i] = $value;
+                $chosen_shipping_methods[ $i ] = $value;
             }
         }
 
@@ -404,86 +508,152 @@ class Mobile_Builder_Cart
     {
         global $WCFM, $WCFMmp;
 
-        //		check_ajax_referer( 'update-order-review', 'security' );
+        // check_ajax_referer( 'update-order-review', 'security' );
 
         wc_maybe_define_constant('WOOCOMMERCE_CHECKOUT', true);
 
-        if (WC()->cart->is_empty() && !is_customize_preview() && apply_filters('woocommerce_checkout_update_order_review_expired', true)) {
-            return new WP_Error(404, __('Sorry, your session has expired.', 'frego-mobile-builder'));
+        if (
+            WC()->cart->is_empty() &&
+            ! is_customize_preview() &&
+            apply_filters(
+                'woocommerce_checkout_update_order_review_expired',
+                true
+            )
+        ) {
+            return new WP_Error(
+                404,
+                __('Sorry, your session has expired.', 'frego-mobile-builder')
+            );
         }
 
-        //		do_action( 'woocommerce_checkout_update_order_review', $request->get_param( 'post_data') ) ? wp_unslash( $request->get_param( 'post_data') ) : '' );
+        // do_action( 'woocommerce_checkout_update_order_review', $request->get_param( 'post_data') ) ? wp_unslash( $request->get_param( 'post_data') ) : '' );
 
-        $chosen_shipping_methods = WC()->session->get('chosen_shipping_methods');
-        $posted_shipping_methods = $request->get_param('shipping_method') ? wc_clean(wp_unslash($request->get_param('shipping_method'))) : [];
+        $chosen_shipping_methods = WC()->session->get(
+            'chosen_shipping_methods'
+        );
+        $posted_shipping_methods = $request->get_param('shipping_method')
+            ? wc_clean(wp_unslash($request->get_param('shipping_method')))
+            : [];
 
         if (is_array($posted_shipping_methods)) {
             foreach ($posted_shipping_methods as $i => $value) {
-                $chosen_shipping_methods[$i] = $value;
+                $chosen_shipping_methods[ $i ] = $value;
             }
         }
 
         WC()->session->set('chosen_shipping_methods', $chosen_shipping_methods);
-        WC()->session->set('chosen_payment_method', empty($request->get_param('shipping_method')) ? '' : wc_clean(wp_unslash($request->get_param('shipping_method'))));
+        WC()->session->set(
+            'chosen_payment_method',
+            empty($request->get_param('shipping_method'))
+                ? ''
+                : wc_clean(wp_unslash($request->get_param('shipping_method')))
+        );
         WC()->customer->set_props(
             [
-                'billing_country' => $request->get_param('country') ? wc_clean(wp_unslash($request->get_param('country'))) : null,
-                'billing_state' => $request->get_param('state') ? wc_clean(wp_unslash($request->get_param('state'))) : null,
-                'billing_postcode' => $request->get_param('postcode') ? wc_clean(wp_unslash($request->get_param('postcode'))) : null,
-                'billing_city' => $request->get_param('city') ? wc_clean(wp_unslash($request->get_param('city'))) : null,
-                'billing_address_1' => $request->get_param('address') ? wc_clean(wp_unslash($request->get_param('address'))) : null,
-                'billing_address_2' => $request->get_param('address_2') ? wc_clean(wp_unslash($request->get_param('address_2'))) : null,
-                'billing_company' => $request->get_param('company') ? wc_clean(wp_unslash($request->get_param('company'))) : null,
-                //				'wcfmmp_user_location'   => $request->get_param( 'wcfmmp_user_location' ) ? wc_clean( wp_unslash( $request->get_param( 'wcfmmp_user_location' ) ) ) : null,
-                //				'wcfmmp_user_location'   => "12 khuat duy tien thanh xuan hanoi"
+                'billing_country'   => $request->get_param('country')
+                    ? wc_clean(wp_unslash($request->get_param('country')))
+                    : null,
+                'billing_state'     => $request->get_param('state')
+                    ? wc_clean(wp_unslash($request->get_param('state')))
+                    : null,
+                'billing_postcode'  => $request->get_param('postcode')
+                    ? wc_clean(wp_unslash($request->get_param('postcode')))
+                    : null,
+                'billing_city'      => $request->get_param('city')
+                    ? wc_clean(wp_unslash($request->get_param('city')))
+                    : null,
+                'billing_address_1' => $request->get_param('address')
+                    ? wc_clean(wp_unslash($request->get_param('address')))
+                    : null,
+                'billing_address_2' => $request->get_param('address_2')
+                    ? wc_clean(wp_unslash($request->get_param('address_2')))
+                    : null,
+                'billing_company'   => $request->get_param('company')
+                    ? wc_clean(wp_unslash($request->get_param('company')))
+                    : null,
+            // 'wcfmmp_user_location'   => $request->get_param( 'wcfmmp_user_location' ) ? wc_clean( wp_unslash( $request->get_param( 'wcfmmp_user_location' ) ) ) : null,
+            // 'wcfmmp_user_location'   => "12 khuat duy tien thanh xuan hanoi"
             ]
         );
 
         if (wc_ship_to_billing_address_only()) {
             WC()->customer->set_props(
                 [
-                    'shipping_country' => $request->get_param('country') ? wc_clean(wp_unslash($request->get_param('country'))) : null,
-                    'shipping_state' => $request->get_param('state') ? wc_clean(wp_unslash($request->get_param('state'))) : null,
-                    'shipping_postcode' => $request->get_param('postcode') ? wc_clean(wp_unslash($request->get_param('postcode'))) : null,
-                    'shipping_city' => $request->get_param('city') ? wc_clean(wp_unslash($request->get_param('city'))) : null,
-                    'shipping_address_1' => $request->get_param('address') ? wc_clean(wp_unslash($request->get_param('address'))) : null,
-                    'shipping_address_2' => $request->get_param('address_2') ? wc_clean(wp_unslash($request->get_param('address_2'))) : null,
-                    'shipping_company' => $request->get_param('company') ? wc_clean(wp_unslash($request->get_param('company'))) : null,
+                    'shipping_country'   => $request->get_param('country')
+                        ? wc_clean(wp_unslash($request->get_param('country')))
+                        : null,
+                    'shipping_state'     => $request->get_param('state')
+                        ? wc_clean(wp_unslash($request->get_param('state')))
+                        : null,
+                    'shipping_postcode'  => $request->get_param('postcode')
+                        ? wc_clean(wp_unslash($request->get_param('postcode')))
+                        : null,
+                    'shipping_city'      => $request->get_param('city')
+                        ? wc_clean(wp_unslash($request->get_param('city')))
+                        : null,
+                    'shipping_address_1' => $request->get_param('address')
+                        ? wc_clean(wp_unslash($request->get_param('address')))
+                        : null,
+                    'shipping_address_2' => $request->get_param('address_2')
+                        ? wc_clean(wp_unslash($request->get_param('address_2')))
+                        : null,
+                    'shipping_company'   => $request->get_param('company')
+                        ? wc_clean(wp_unslash($request->get_param('company')))
+                        : null,
                 ]
             );
         } else {
             WC()->customer->set_props(
                 [
-                    'shipping_country' => $request->get_param('s_country') ? wc_clean(wp_unslash($request->get_param('s_country'))) : null,
-                    'shipping_state' => $request->get_param('s_state') ? wc_clean(wp_unslash($request->get_param('s_state'))) : null,
-                    'shipping_postcode' => $request->get_param('s_postcode') ? wc_clean(wp_unslash($request->get_param('s_postcode'))) : null,
-                    'shipping_city' => $request->get_param('s_city') ? wc_clean(wp_unslash($request->get_param('s_city'))) : null,
-                    'shipping_address_1' => $request->get_param('s_address') ? wc_clean(wp_unslash($request->get_param('s_address'))) : null,
-                    'shipping_address_2' => $request->get_param('s_address_2') ? wc_clean(wp_unslash($request->get_param('s_address_2'))) : null,
-                    'shipping_company' => $request->get_param('s_company') ? wc_clean(wp_unslash($request->get_param('s_company'))) : null,
+                    'shipping_country'   => $request->get_param('s_country')
+                        ? wc_clean(wp_unslash($request->get_param('s_country')))
+                        : null,
+                    'shipping_state'     => $request->get_param('s_state')
+                        ? wc_clean(wp_unslash($request->get_param('s_state')))
+                        : null,
+                    'shipping_postcode'  => $request->get_param('s_postcode')
+                        ? wc_clean(wp_unslash($request->get_param('s_postcode')))
+                        : null,
+                    'shipping_city'      => $request->get_param('s_city')
+                        ? wc_clean(wp_unslash($request->get_param('s_city')))
+                        : null,
+                    'shipping_address_1' => $request->get_param('s_address')
+                        ? wc_clean(wp_unslash($request->get_param('s_address')))
+                        : null,
+                    'shipping_address_2' => $request->get_param('s_address_2')
+                        ? wc_clean(wp_unslash($request->get_param('s_address_2')))
+                        : null,
+                    'shipping_company'   => $request->get_param('s_company')
+                        ? wc_clean(wp_unslash($request->get_param('s_company')))
+                        : null,
                 ]
             );
         }
 
-        if ($request->get_param('has_full_address') && wc_string_to_bool(wc_clean(wp_unslash($request->get_param('has_full_address'))))) {
+        if (
+            $request->get_param('has_full_address') &&
+            wc_string_to_bool(
+                wc_clean(wp_unslash($request->get_param('has_full_address')))
+            )
+        ) {
             WC()->customer->set_calculated_shipping(true);
         } else {
             WC()->customer->set_calculated_shipping(false);
         }
 
-        //		if ( apply_filters( 'wcfmmp_is_allow_checkout_user_location', true ) ) {
-        //			if ( $request->get_param( 'wcfmmp_user_location' ) ) {
-        //				WC()->customer->set_props( array( 'wcfmmp_user_location' => sanitize_text_field( $request->get_param( 'wcfmmp_user_location' ) ) ) );
-        //				WC()->session->set( '_wcfmmp_user_location', sanitize_text_field( $request->get_param( 'wcfmmp_user_location' ) ) );
-        //			}
-        //			if ( $request->get_param( 'wcfmmp_user_location_lat' ) ) {
-        //				WC()->session->set( '_wcfmmp_user_location_lat', sanitize_text_field( $request->get_param( 'wcfmmp_user_location_lat' ) ) );
-        //			}
+        // if ( apply_filters( 'wcfmmp_is_allow_checkout_user_location', true ) ) {
+        // if ( $request->get_param( 'wcfmmp_user_location' ) ) {
+        // WC()->customer->set_props( array( 'wcfmmp_user_location' => sanitize_text_field( $request->get_param( 'wcfmmp_user_location' ) ) ) );
+        // WC()->session->set( '_wcfmmp_user_location', sanitize_text_field( $request->get_param( 'wcfmmp_user_location' ) ) );
+        // }
+        // if ( $request->get_param( 'wcfmmp_user_location_lat' ) ) {
+        // WC()->session->set( '_wcfmmp_user_location_lat', sanitize_text_field( $request->get_param( 'wcfmmp_user_location_lat' ) ) );
+        // }
         //
-        //			if ( $request->get_param( 'wcfmmp_user_location_lng' ) ) {
-        //				WC()->session->set( '_wcfmmp_user_location_lng', sanitize_text_field( $request->get_param( 'wcfmmp_user_location_lng' ) ) );
-        //			}
-        //		}
+        // if ( $request->get_param( 'wcfmmp_user_location_lng' ) ) {
+        // WC()->session->set( '_wcfmmp_user_location_lng', sanitize_text_field( $request->get_param( 'wcfmmp_user_location_lng' ) ) );
+        // }
+        // }
 
         WC()->customer->save();
 
@@ -503,7 +673,7 @@ class Mobile_Builder_Cart
 
         // Get messages if reload checkout is not true.
         $reload_checkout = isset(WC()->session->reload_checkout) ? true : false;
-        if (!$reload_checkout) {
+        if (! $reload_checkout) {
             $messages = wc_print_notices(true);
         } else {
             $messages = '';
@@ -513,11 +683,11 @@ class Mobile_Builder_Cart
 
         wp_send_json(
             [
-                'result' => empty($messages) ? 'success' : 'failure',
+                'result'   => empty($messages) ? 'success' : 'failure',
                 'messages' => $messages,
-                'reload' => $reload_checkout,
-                'nonce' => wp_create_nonce('woocommerce-process_checkout'),
-                'totals' => WC()->cart->get_totals(),
+                'reload'   => $reload_checkout,
+                'nonce'    => wp_create_nonce('woocommerce-process_checkout'),
+                'totals'   => WC()->cart->get_totals(),
             ]
         );
     }
@@ -531,7 +701,9 @@ class Mobile_Builder_Cart
     {
         wc_maybe_define_constant('WOOCOMMERCE_CHECKOUT', true);
         wc_maybe_define_constant('DOING_AJAX', true);
-        WC()->checkout()->process_checkout();
+        WC()
+            ->checkout()
+            ->process_checkout();
         wp_die(0);
     }
 
@@ -544,20 +716,31 @@ class Mobile_Builder_Cart
         WC()->cart->calculate_shipping();
         WC()->cart->calculate_totals();
 
-        $packages = WC()->shipping()->get_packages();
+        $packages = WC()
+            ->shipping()
+            ->get_packages();
 
-        $first = true;
+        $first   = true;
         $methods = [];
 
         foreach ($packages as $i => $package) {
-            $chosen_method = isset(WC()->session->chosen_shipping_methods[$i]) ? WC()->session->chosen_shipping_methods[$i] : '';
+            $chosen_method = isset(WC()->session->chosen_shipping_methods[ $i ])
+                ? WC()->session->chosen_shipping_methods[ $i ]
+                : '';
             $product_names = [];
 
             if (count($packages) > 1) {
                 foreach ($package['contents'] as $item_id => $values) {
-                    $product_names[$item_id] = $values['data']->get_name().' &times;'.$values['quantity'];
+                    $product_names[ $item_id ] =
+                        $values['data']->get_name() .
+                        ' &times;' .
+                        $values['quantity'];
                 }
-                $product_names = apply_filters('woocommerce_shipping_package_details_array', $product_names, $package);
+                $product_names = apply_filters(
+                    'woocommerce_shipping_package_details_array',
+                    $product_names,
+                    $package
+                );
             }
 
             $available_methods = [];
@@ -565,23 +748,50 @@ class Mobile_Builder_Cart
             foreach ($package['rates'] as $i => $value) {
                 $available_methods[] = [
                     'label' => wc_cart_totals_shipping_method_label($value),
-                    'id' => $i,
+                    'id'    => $i,
                 ];
             }
 
             $methods[] = [
-                'package' => $package,
-                'available_methods' => $available_methods,
-                'show_package_details' => count($packages) > 1,
-                'show_shipping_calculator' => is_cart() && apply_filters('woocommerce_shipping_show_shipping_calculator', $first, $i, $package),
-                'package_details' => implode(', ', $product_names),
+                'package'                  => $package,
+                'available_methods'        => $available_methods,
+                'show_package_details'     => count($packages) > 1,
+                'show_shipping_calculator' => is_cart() &&
+                    apply_filters(
+                        'woocommerce_shipping_show_shipping_calculator',
+                        $first,
+                        $i,
+                        $package
+                    ),
+                'package_details'          => implode(', ', $product_names),
                 // translators: %d: shipping package number
-                'package_name' => apply_filters('woocommerce_shipping_package_name', (($i + 1) > 1) ? sprintf(_x('Shipping %d', 'shipping packages', 'woocommerce'), ($i + 1)) : _x('Shipping', 'shipping packages', 'woocommerce'), $i, $package),
-                'index' => $i,
-                'chosen_method' => $chosen_method,
-                'formatted_destination' => WC()->countries->get_formatted_address($package['destination'], ', '),
-                'has_calculated_shipping' => WC()->customer->has_calculated_shipping(),
-                'store' => $store = get_user_meta($package['vendor_id'], 'wcfmmp_profile_settings', true),
+                'package_name'             => apply_filters(
+                    'woocommerce_shipping_package_name',
+                    $i + 1 > 1
+                        ? sprintf(
+                            _x(
+                                'Shipping %d',
+                                'shipping packages',
+                                'woocommerce'
+                            ),
+                            $i + 1
+                        )
+                        : _x('Shipping', 'shipping packages', 'woocommerce'),
+                    $i,
+                    $package
+                ),
+                'index'                    => $i,
+                'chosen_method'            => $chosen_method,
+                'formatted_destination'    => WC()->countries->get_formatted_address(
+                    $package['destination'],
+                    ', '
+                ),
+                'has_calculated_shipping'  => WC()->customer->has_calculated_shipping(),
+                'store'                    => ($store = get_user_meta(
+                    $package['vendor_id'],
+                    'wcfmmp_profile_settings',
+                    true
+                )),
             ];
 
             $first = false;
@@ -609,10 +819,14 @@ class Mobile_Builder_Cart
      */
     public function set_quantity($request)
     {
-        $cart_item_key = $request->get_param('cart_item_key') ? wc_clean(wp_unslash($request->get_param('cart_item_key'))) : '';
-        $quantity = $request->get_param('quantity') ? wc_clean(wp_unslash($request->get_param('quantity'))) : 1;
+        $cart_item_key = $request->get_param('cart_item_key')
+            ? wc_clean(wp_unslash($request->get_param('cart_item_key')))
+            : '';
+        $quantity      = $request->get_param('quantity')
+            ? wc_clean(wp_unslash($request->get_param('quantity')))
+            : 1;
 
-        if (!$cart_item_key) {
+        if (! $cart_item_key) {
             return new WP_Error(
                 'set_quantity_error',
                 __('Cart item key not exist.', 'frego-mobile-builder')
@@ -628,13 +842,13 @@ class Mobile_Builder_Cart
 
         try {
             return [
-                'success' => WC()->cart->set_quantity($cart_item_key, $quantity),
+                'success' => WC()->cart->set_quantity(
+                    $cart_item_key,
+                    $quantity
+                ),
             ];
         } catch (Exception $e) {
-            return new WP_Error(
-                'set_quantity_error',
-                $e->getMessage()
-            );
+            return new WP_Error('set_quantity_error', $e->getMessage());
         }
     }
 
@@ -647,9 +861,11 @@ class Mobile_Builder_Cart
      */
     public function remove_cart_item($request)
     {
-        $cart_item_key = $request->get_param('cart_item_key') ? wc_clean(wp_unslash($request->get_param('cart_item_key'))) : '';
+        $cart_item_key = $request->get_param('cart_item_key')
+            ? wc_clean(wp_unslash($request->get_param('cart_item_key')))
+            : '';
 
-        if (!$cart_item_key) {
+        if (! $cart_item_key) {
             return new WP_Error(
                 'remove_cart_item',
                 __('Cart item key not exist.', 'frego-mobile-builder')
@@ -663,10 +879,7 @@ class Mobile_Builder_Cart
                 'success' => WC()->cart->remove_cart_item($cart_item_key),
             ];
         } catch (Exception $e) {
-            return new WP_Error(
-                'set_quantity_error',
-                $e->getMessage()
-            );
+            return new WP_Error('set_quantity_error', $e->getMessage());
         }
     }
 
@@ -681,9 +894,13 @@ class Mobile_Builder_Cart
      */
     public function add_discount($request)
     {
-        $coupon_code = $request->get_param('coupon_code') ? wc_format_coupon_code(wp_unslash($request->get_param('coupon_code'))) : '';
+        $coupon_code = $request->get_param('coupon_code')
+            ? wc_format_coupon_code(
+                wp_unslash($request->get_param('coupon_code'))
+            )
+            : '';
 
-        if (!$coupon_code) {
+        if (! $coupon_code) {
             return new WP_Error(
                 'add_discount',
                 __('Coupon not exist.', 'frego-mobile-builder')
@@ -695,10 +912,7 @@ class Mobile_Builder_Cart
                 'success' => WC()->cart->add_discount($coupon_code),
             ];
         } catch (Exception $e) {
-            return new WP_Error(
-                'set_quantity_error',
-                $e->getMessage()
-            );
+            return new WP_Error('set_quantity_error', $e->getMessage());
         }
     }
 
@@ -713,9 +927,13 @@ class Mobile_Builder_Cart
      */
     public function remove_coupon($request)
     {
-        $coupon_code = $request->get_param('coupon_code') ? wc_format_coupon_code(wp_unslash($request->get_param('coupon_code'))) : '';
+        $coupon_code = $request->get_param('coupon_code')
+            ? wc_format_coupon_code(
+                wp_unslash($request->get_param('coupon_code'))
+            )
+            : '';
 
-        if (!$coupon_code) {
+        if (! $coupon_code) {
             return new WP_Error(
                 'remove_coupon',
                 __('Coupon not exist.', 'frego-mobile-builder')
@@ -730,10 +948,7 @@ class Mobile_Builder_Cart
                 'success' => $status,
             ];
         } catch (Exception $e) {
-            return new WP_Error(
-                'set_quantity_error',
-                $e->getMessage()
-            );
+            return new WP_Error('set_quantity_error', $e->getMessage());
         }
     }
 

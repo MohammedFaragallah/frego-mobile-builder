@@ -2,26 +2,26 @@
 
 /**
  * Fired during plugin activation.
- *
- * @see       https://rnlab.io
  */
 
 /**
  * Fired during plugin activation.
  *
  * This class defines all code necessary to run during the plugin's activation.
- *
- * @author     RNLAB <ngocdt@rnlab.io>
  */
 class Mobile_Builder_Activator
 {
+
+
+
+
     /**
      * Active plugin action.
      */
     public static function activate()
     {
         // Install database tables.
-        self::create_tables();
+        // self::create_tables();
     }
 
     /**
@@ -35,12 +35,13 @@ class Mobile_Builder_Activator
     {
         global $wpdb;
 
-        $table_name_templates = $wpdb->prefix.MOBILE_BUILDER_TABLE_NAME;
-        $table_name_carts = $wpdb->prefix.MOBILE_BUILDER_TABLE_NAME.'_carts';
+        $table_name_templates = $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME;
+        $table_name_carts     =
+            $wpdb->prefix . MOBILE_BUILDER_TABLE_NAME . '_carts';
 
         $wpdb->hide_errors();
 
-        require_once ABSPATH.'wp-admin/includes/upgrade.php';
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
         $collate = '';
 
