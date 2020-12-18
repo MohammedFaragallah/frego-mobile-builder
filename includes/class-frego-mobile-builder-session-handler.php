@@ -132,7 +132,7 @@ class Mobile_Builder_Session_Handler extends WC_Session
         }
 
         if (empty($customer_id)) {
-            require_once ABSPATH . 'wp-includes/class-phpass.php';
+            include_once ABSPATH . 'wp-includes/class-phpass.php';
             $hasher      = new PasswordHash(8, false);
             $customer_id = md5($hasher->get_random_bytes(32));
         }

@@ -39,7 +39,7 @@ $totals = $order->get_order_item_totals();
                 }
                 ?>
       <tr class="
-				<?php
+                <?php
                 echo esc_attr(
                     apply_filters(
                         'woocommerce_order_item_class',
@@ -49,7 +49,7 @@ $totals = $order->get_order_item_totals();
                     )
                 );
                 ?>
-					">
+                    ">
         <td class="product-name">
           <?php
                 echo apply_filters(

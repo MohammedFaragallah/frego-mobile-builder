@@ -278,15 +278,14 @@ class Mobile_Builder_Cart
      */
     public function mobile_builder_pre_car_rest_api()
     {
-        if (
-            defined('WC_VERSION') &&
-            version_compare(WC_VERSION, '3.6.0', '>=') &&
-            WC()->is_rest_api_request()
+        if (defined('WC_VERSION')
+            && version_compare(WC_VERSION, '3.6.0', '>=')
+            && WC()->is_rest_api_request()
         ) {
-            require_once WC_ABSPATH . 'includes/wc-cart-functions.php';
-            require_once WC_ABSPATH . 'includes/wc-notice-functions.php';
+            include_once WC_ABSPATH . 'includes/wc-cart-functions.php';
+            include_once WC_ABSPATH . 'includes/wc-notice-functions.php';
 
-            require_once plugin_dir_path(dirname(__FILE__)) .
+            include_once plugin_dir_path(dirname(__FILE__)) .
               'includes/class-frego-mobile-builder-session-handler.php';
 
             // Disable cookie authentication REST check and only if site is secure.
@@ -356,10 +355,9 @@ class Mobile_Builder_Cart
                 get_post_thumbnail_id($_product->get_id()),
                 'single-post-thumbnail'
             );
-            if (
-                $_product &&
-                $_product->exists() &&
-                $cart_item['quantity'] > 0
+            if ($_product
+                && $_product->exists()
+                && $cart_item['quantity'] > 0
             ) {
                 if (WC()->cart->display_prices_including_tax()) {
                     $product_price = wc_get_price_including_tax($_product);
@@ -512,10 +510,9 @@ class Mobile_Builder_Cart
 
         wc_maybe_define_constant('WOOCOMMERCE_CHECKOUT', true);
 
-        if (
-            WC()->cart->is_empty() &&
-            ! is_customize_preview() &&
-            apply_filters(
+        if (WC()->cart->is_empty()
+            && ! is_customize_preview()
+            && apply_filters(
                 'woocommerce_checkout_update_order_review_expired',
                 true
             )
@@ -630,9 +627,8 @@ class Mobile_Builder_Cart
             );
         }
 
-        if (
-            $request->get_param('has_full_address') &&
-            wc_string_to_bool(
+        if ($request->get_param('has_full_address')
+            && wc_string_to_bool(
                 wc_clean(wp_unslash($request->get_param('has_full_address')))
             )
         ) {

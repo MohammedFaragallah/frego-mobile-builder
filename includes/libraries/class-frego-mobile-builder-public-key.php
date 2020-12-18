@@ -23,9 +23,8 @@ class Mobile_Builder_Public_Key
         $publicKeys        = file_get_contents('https://appleid.apple.com/auth/keys');
         $decodedPublicKeys = json_decode($publicKeys, true);
 
-        if (
-            ! isset($decodedPublicKeys['keys']) ||
-            count($decodedPublicKeys['keys']) < 1
+        if (! isset($decodedPublicKeys['keys'])
+            || count($decodedPublicKeys['keys']) < 1
         ) {
             throw new Exception(
                 __('Invalid key format.', 'frego-mobile-builder')
@@ -89,40 +88,40 @@ class Mobile_Builder_Public_Key
         }
 
         switch ($jwk['kty']) {
-            case 'RSA':
-                if (\array_key_exists('d', $jwk)) {
-                    throw new UnexpectedValueException(
-                        __(
-                            'RSA private keys are not supported',
-                            'frego-mobile-builder'
-                        )
-                    );
-                }
-                if (! isset($jwk['n']) || ! isset($jwk['e'])) {
-                    throw new UnexpectedValueException(
-                        __(
-                            'RSA keys must contain values for both "n" and "e"',
-                            'frego-mobile-builder'
-                        )
-                    );
-                }
-
-                $pem       = self::createPemFromModulusAndExponent(
-                    $jwk['n'],
-                    $jwk['e']
+        case 'RSA':
+            if (\array_key_exists('d', $jwk)) {
+                throw new UnexpectedValueException(
+                    __(
+                        'RSA private keys are not supported',
+                        'frego-mobile-builder'
+                    )
                 );
-                $publicKey = \openssl_pkey_get_public($pem);
-                if (false === $publicKey) {
-                    throw new DomainException(
-                        __('OpenSSL error: ', 'frego-mobile-builder') .
-                        \openssl_error_string()
-                    );
-                }
+            }
+            if (! isset($jwk['n']) || ! isset($jwk['e'])) {
+                throw new UnexpectedValueException(
+                    __(
+                        'RSA keys must contain values for both "n" and "e"',
+                        'frego-mobile-builder'
+                    )
+                );
+            }
 
-                return $publicKey;
-            default:
-                // Currently only RSA is supported
-                break;
+            $pem       = self::createPemFromModulusAndExponent(
+                $jwk['n'],
+                $jwk['e']
+            );
+            $publicKey = \openssl_pkey_get_public($pem);
+            if (false === $publicKey) {
+                throw new DomainException(
+                    __('OpenSSL error: ', 'frego-mobile-builder') .
+                    \openssl_error_string()
+                );
+            }
+
+            return $publicKey;
+        default:
+            // Currently only RSA is supported
+            break;
         }
     }
 

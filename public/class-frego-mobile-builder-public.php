@@ -461,7 +461,7 @@ class Mobile_Builder_Public
      *
      * @author Ngoc Dang
      *
-     * @param mixed $request
+     * @param WP_REST_Request $request Request object.
      */
     public function mbd_check_phone_number($request)
     {
@@ -572,24 +572,21 @@ class Mobile_Builder_Public
         $template_name,
         $template_path
     ) {
-        if (
-            'checkout/form-checkout.php' == $template_name &&
-            isset($_GET['mobile'])
+        if ('checkout/form-checkout.php' == $template_name
+            && isset($_GET['mobile'])
         ) {
             return plugin_dir_path(__DIR__) .
                 'templates/checkout/form-checkout.php';
         }
 
-        if (
-            'checkout/thankyou.php' == $template_name &&
-            isset($_GET['mobile'])
+        if ('checkout/thankyou.php' == $template_name
+            && isset($_GET['mobile'])
         ) {
             return plugin_dir_path(__DIR__) . 'templates/checkout/thankyou.php';
         }
 
-        if (
-            'checkout/form-pay.php' == $template_name &&
-            isset($_GET['mobile'])
+        if ('checkout/form-pay.php' == $template_name
+            && isset($_GET['mobile'])
         ) {
             return plugin_dir_path(__DIR__) . 'templates/checkout/form-pay.php';
         }
@@ -602,7 +599,7 @@ class Mobile_Builder_Public
      *
      * @author Ngoc Dang
      *
-     * @param null|mixed $request
+     * @param null|WP_REST_Request $request Request object.
      */
     public function process_payment($request = null)
     {
@@ -649,9 +646,8 @@ class Mobile_Builder_Public
 
             return $error;
         }
-        if (
-            'pending' !== wc_get_order($order_id)->get_status() &&
-            'failed' !== wc_get_order($order_id)->get_status()
+        if ('pending' !== wc_get_order($order_id)->get_status()
+            && 'failed' !== wc_get_order($order_id)->get_status()
         ) {
             $error->add(
                 403,
@@ -772,6 +768,9 @@ class Mobile_Builder_Public
         );
     }
 
+    /**
+     * @param WP_REST_Request $request Request object.
+     */
     public function get_continent_code_for_country($request)
     {
         $cc         = $request->get_param('cc');
@@ -814,6 +813,9 @@ class Mobile_Builder_Public
         wp_send_json($data);
     }
 
+    /**
+     * @param WP_REST_Request $request Request object.
+     */
     public function change_password($request)
     {
         $current_user = wp_get_current_user();
@@ -854,7 +856,7 @@ class Mobile_Builder_Public
     /**
      * Update User Location.
      *
-     * @param $request
+     * @param WP_REST_Request $request Request object.
      *
      * @return int|WP_Error
      */
@@ -879,6 +881,9 @@ class Mobile_Builder_Public
         return $current_user->ID;
     }
 
+    /**
+     * @param WP_REST_Request $request Request object.
+     */
     public function settings($request)
     {
         $result = $request->get_param('decode');
@@ -911,9 +916,8 @@ class Mobile_Builder_Public
                 ? get_woocommerce_currency()
                 : 'USD';
 
-            if (
-                ! empty($woocommerce_wpml->multi_currency) &&
-                ! empty($woocommerce_wpml->settings['currencies_order'])
+            if (! empty($woocommerce_wpml->multi_currency)
+                && ! empty($woocommerce_wpml->settings['currencies_order'])
             ) {
                 $currencies = $woocommerce_wpml->multi_currency->get_currencies(
                     'include_default = true'
@@ -968,7 +972,7 @@ class Mobile_Builder_Public
     /**
      * Create token for app.
      *
-     * @param $request
+     * @param WP_REST_Request $request Request object.
      *
      * @return bool|WP_Error
      */
@@ -994,7 +998,7 @@ class Mobile_Builder_Public
     /**
      * Lost password for user.
      *
-     * @param $request
+     * @param WP_REST_Request $request Request object.
      *
      * @return bool|WP_Error
      */
@@ -1136,9 +1140,8 @@ class Mobile_Builder_Public
             $user_data
         );
 
-        if (
-            $message &&
-            ! wp_mail($user_email, wp_specialchars_decode($title), $message)
+        if ($message
+            && ! wp_mail($user_email, wp_specialchars_decode($title), $message)
         ) {
             return new WP_Error(
                 'send_email',
@@ -1158,7 +1161,7 @@ class Mobile_Builder_Public
     /**
      *  Get current user login.
      *
-     * @param $request
+     * @param WP_REST_Request $request Request object.
      *
      * @return mixed
      */
@@ -1172,7 +1175,7 @@ class Mobile_Builder_Public
     /**
      *  Validate user.
      *
-     * @param $request
+     * @param WP_REST_Request $request Request object.
      *
      * @return mixed
      */
@@ -1238,7 +1241,7 @@ class Mobile_Builder_Public
     /**
      * Login with google.
      *
-     * @param $request
+     * @param WP_REST_Request $request Request object.
      */
     public function login_google($request)
     {
@@ -1332,7 +1335,7 @@ class Mobile_Builder_Public
     /**
      * Login With Apple.
      *
-     * @param $request
+     * @param WP_REST_Request $request Request object.
      *
      * @throws Exception
      *
@@ -1358,9 +1361,7 @@ class Mobile_Builder_Public
 
             list($headb64) = $tks;
 
-            if (
-                null ===
-                ($header = JWT::jsonDecode(JWT::urlsafeB64Decode($headb64)))
+            if (null ===            ($header = JWT::jsonDecode(JWT::urlsafeB64Decode($headb64)))
             ) {
                 return new WP_Error(
                     'error_login_apple',
@@ -1465,6 +1466,9 @@ class Mobile_Builder_Public
         }
     }
 
+    /**
+     * @param WP_REST_Request $request Request object.
+     */
     public function login_facebook($request)
     {
         $token = $request->get_param('token');
@@ -1570,7 +1574,7 @@ class Mobile_Builder_Public
     /**
      * Do login with email and password.
      *
-     * @param mixed $request
+     * @param WP_REST_Request $request Request object.
      */
     public function login($request)
     {
@@ -1787,7 +1791,7 @@ class Mobile_Builder_Public
     /**
      * Check if a given request has access to read a customer.
      *
-     * @param WP_REST_Request $request full details about the request
+     * @param WP_REST_Request $request Request object.
      *
      * @return bool|WP_Error
      */

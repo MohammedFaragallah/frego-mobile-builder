@@ -41,7 +41,7 @@ class Mobile_Builder_Activator
 
         $wpdb->hide_errors();
 
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        include_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
         $collate = '';
 

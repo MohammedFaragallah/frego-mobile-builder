@@ -148,11 +148,10 @@ class Mobile_Builder_Vendor
 
         $distance_matrix = [];
 
-        if (
-            $wcfmmp_radius_lat &&
-            $wcfmmp_radius_lng &&
-            $store['store_lat'] &&
-            $store['store_lng']
+        if ($wcfmmp_radius_lat
+            && $wcfmmp_radius_lng
+            && $store['store_lat']
+            && $store['store_lng']
         ) {
             $origin_string       = $store['store_lat'] . ',' . $store['store_lng'];
             $destinations_string = "{$wcfmmp_radius_lat},{$wcfmmp_radius_lng}";
@@ -272,10 +271,9 @@ class Mobile_Builder_Vendor
             return $args;
         }
 
-        if (
-            ! isset($_GET['radius_range']) &&
-            ! isset($_GET['radius_lat']) &&
-            ! isset($_GET['radius_lng'])
+        if (! isset($_GET['radius_range'])
+            && ! isset($_GET['radius_lat'])
+            && ! isset($_GET['radius_lng'])
         ) {
             return $args;
         }
@@ -304,10 +302,9 @@ class Mobile_Builder_Vendor
             ? wc_clean($_GET['radius_lng'])
             : '';
 
-        if (
-            ! empty($radius_lat) &&
-            ! empty($radius_lng) &&
-            ! empty($radius_range)
+        if (! empty($radius_lat)
+            && ! empty($radius_lng)
+            && ! empty($radius_range)
         ) {
             $wcfmmp_radius_lat   = $radius_lat;
             $wcfmmp_radius_lng   = $radius_lng;
@@ -473,11 +470,10 @@ class Mobile_Builder_Vendor
 																({$messageid}, 1, {$message_to}, '{$todate}')";
         $result            = $wpdb->query($wcfm_read_message);
 
-        if (
-            wcfm_is_vendor() ||
-            (function_exists('wcfm_is_delivery_boy') &&
-                wcfm_is_delivery_boy()) ||
-            (function_exists('wcfm_is_affiliate') && wcfm_is_affiliate())
+        if (wcfm_is_vendor()
+            || (function_exists('wcfm_is_delivery_boy')
+            && wcfm_is_delivery_boy())
+            || (function_exists('wcfm_is_affiliate') && wcfm_is_affiliate())
         ) {
             $cache_key = $this->cache_group . '-message-' . $message_to;
         } else {
@@ -505,11 +501,10 @@ class Mobile_Builder_Vendor
             "DELETE FROM {$wpdb->prefix}wcfm_messages_modifier WHERE `message` = {$messageid}"
         );
 
-        if (
-            wcfm_is_vendor() ||
-            (function_exists('wcfm_is_delivery_boy') &&
-                wcfm_is_delivery_boy()) ||
-            (function_exists('wcfm_is_affiliate') && wcfm_is_affiliate())
+        if (wcfm_is_vendor()
+            || (function_exists('wcfm_is_delivery_boy')
+            && wcfm_is_delivery_boy())
+            || (function_exists('wcfm_is_affiliate') && wcfm_is_affiliate())
         ) {
             $message_to = apply_filters(
                 'wcfm_message_author',
@@ -568,11 +563,10 @@ class Mobile_Builder_Vendor
                             $delivery_detail->delivery_boy
                         );
 
-                        if (
-                            apply_filters(
-                                'wcfm_is_show_marketplace_itemwise_orders',
-                                true
-                            )
+                        if (apply_filters(
+                            'wcfm_is_show_marketplace_itemwise_orders',
+                            true
+                        )
                         ) {
                             // Admin Notification
                             $wcfm_messages = sprintf(

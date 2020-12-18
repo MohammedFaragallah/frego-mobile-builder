@@ -3,7 +3,7 @@
 /**
  * REST API endpoint for WooCommerce Payment via Razorpay Standard.
  *
- * @author     Ngoc Dang
+ * @author Ngoc Dang
  */
 class Mobile_Builder_Gateway_Razorpay
 {

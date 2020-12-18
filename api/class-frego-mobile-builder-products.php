@@ -75,6 +75,9 @@ class Mobile_Builder_Products
         );
     }
 
+    /**
+     * @param WP_REST_Request $request Request object.
+     */
     public function get_min_max_prices($request)
     {
         global $wpdb;
@@ -141,6 +144,9 @@ class Mobile_Builder_Products
         return $wpdb->get_row($sql); // WPCS: unprepared SQL ok.
     }
 
+    /**
+     * @param WP_REST_Request $request Request object.
+     */
     public function get_filtered_term_product_counts($request)
     {
         global $wpdb;

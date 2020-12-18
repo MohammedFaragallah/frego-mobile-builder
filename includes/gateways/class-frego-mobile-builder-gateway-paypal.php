@@ -5,7 +5,7 @@
  *
  * @see https://docs.woocommerce.com/document/paypal-standard/ PayPal Standard
  *
- * @author     Ngoc Dang
+ * @author Ngoc Dang
  */
 class Mobile_Builder_Gateway_PayPal
 {

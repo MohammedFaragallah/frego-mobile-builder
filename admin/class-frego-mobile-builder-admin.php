@@ -269,7 +269,9 @@ class Mobile_Builder_Admin
     /**
      * Render the settings page for this plugin.
      */
-    public function display_plugin_admin_page() {       ?>
+    public function display_plugin_admin_page()
+    {
+        ?>
 <?php
     }
 

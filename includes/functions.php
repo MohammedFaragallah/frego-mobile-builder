@@ -141,9 +141,8 @@ function shipping_class_in_item_name($item_name, $cart_item, $cart_item_key)
     }
 
     // If the Shipping Class slug is either of these, then add a prefix and suffix to the output
-    if (
-        'flat-1995-per' == $shipping_class_term->slug ||
-        'flat-4999-per' == $shipping_class_term->slug
+    if ('flat-1995-per' == $shipping_class_term->slug
+        || 'flat-4999-per' == $shipping_class_term->slug
     ) {
         $prefix = '$';
         $suffix = 'each';

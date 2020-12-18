@@ -121,31 +121,31 @@ class Mobile_Builder
         /**
            * load frego functions.
            */
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'includes/functions.php';
         /**
          * Load function.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'helpers/frego-mobile-builder-functions.php';
 
         /**
          * Load dependency install by composer.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'vendor/autoload.php';
+        include_once plugin_dir_path(dirname(__FILE__)) . 'vendor/autoload.php';
 
         /**
          * The class responsible for orchestrating the actions and filters of the
          * core plugin.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'includes/class-frego-mobile-builder-loader.php';
 
         /**
          * The class responsible for defining internationalization functionality
          * of the plugin.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'includes/class-frego-mobile-builder-i18n.php';
 
         /**
@@ -153,48 +153,48 @@ class Mobile_Builder
          *
          * @author Ngoc Dang
          */
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'includes/gateways/class-frego-mobile-builder-gateway-paypal.php';
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'includes/gateways/class-frego-mobile-builder-gateway-razorpay.php';
 
         /**
          * The class responsible for defining all actions that occur in the admin area.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'admin/class-frego-mobile-builder-admin.php';
 
         /**
          * The class responsible for defining all actions that occur in the public-facing
          * side of the site.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'public/class-frego-mobile-builder-public.php';
 
         /**
          * The class responsible for defining all actions that occur in the product-facing
          * side of the site.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'product/class-frego-mobile-builder-product.php';
 
         /**
          * The class responsible for defining all actions that occur in the api
          * side of the site.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'api/class-frego-mobile-builder-auth.php';
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'api/class-frego-mobile-builder-cart.php';
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'api/class-frego-mobile-builder-wcfm.php';
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'api/class-frego-mobile-builder-products.php';
 
         /**
          * Load library.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) .
+        include_once plugin_dir_path(dirname(__FILE__)) .
             'includes/libraries/class-frego-mobile-builder-public-key.php';
 
         $this->loader = new Mobile_Builder_Loader();

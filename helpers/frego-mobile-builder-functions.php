@@ -5,7 +5,7 @@
  *
  * @param $method
  * @param $url
- * @param bool   $data
+ * @param bool $data
  *
  * @return bool|string
  */
@@ -14,22 +14,22 @@ function mobile_builder_request($method, $url, $data = false)
     $curl = curl_init();
 
     switch ($method) {
-        case 'POST':
-            curl_setopt($curl, CURLOPT_POST, 1);
+    case 'POST':
+        curl_setopt($curl, CURLOPT_POST, 1);
 
-            if ($data) {
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            }
+        if ($data) {
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        }
 
-            break;
-        case 'PUT':
-            curl_setopt($curl, CURLOPT_PUT, 1);
+        break;
+    case 'PUT':
+        curl_setopt($curl, CURLOPT_PUT, 1);
 
-            break;
-        default:
-            if ($data) {
-                $url = sprintf('%s?%s', $url, http_build_query($data));
-            }
+        break;
+    default:
+        if ($data) {
+            $url = sprintf('%s?%s', $url, http_build_query($data));
+        }
     }
 
     // Optional Authentication:
@@ -52,7 +52,7 @@ function mobile_builder_request($method, $url, $data = false)
  * @param $origin_string
  * @param $destinations_string
  * @param $key
- * @param string              $units
+ * @param string $units
  *
  * @return mixed
  */

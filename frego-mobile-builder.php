@@ -8,7 +8,7 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @see              github.com/MohammedFaragallah
+ * @see github.com/MohammedFaragallah
  *
  * @wordpress-plugin
  * Plugin Name:       Frego Mobile Builder
@@ -45,7 +45,7 @@ define('MOBILE_BUILDER_TABLE_NAME', 'frego_mobile_builder');
  */
 function activate_mobile_builder()
 {
-    require_once plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder-activator.php';
+    include_once plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder-activator.php';
     Mobile_Builder_Activator::activate();
 }
 
@@ -55,7 +55,7 @@ function activate_mobile_builder()
  */
 function deactivate_mobile_builder()
 {
-    require_once plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder-deactivator.php';
+    include_once plugin_dir_path(__FILE__) . 'includes/class-frego-mobile-builder-deactivator.php';
     Mobile_Builder_Deactivator::deactivate();
 }
 

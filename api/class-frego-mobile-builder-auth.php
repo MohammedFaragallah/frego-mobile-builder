@@ -65,7 +65,7 @@ class Mobile_Builder_Auth
     /**
      * Set user login.
      *
-     * @param $request
+     * @param WP_REST_Request $request Request object.
      */
     public function auto_login($request)
     {
@@ -93,7 +93,7 @@ class Mobile_Builder_Auth
     /**
      * Check user logged in.
      *
-     * @param $request
+     * @param WP_REST_Request $request Request object.
      *
      * @return bool
      */

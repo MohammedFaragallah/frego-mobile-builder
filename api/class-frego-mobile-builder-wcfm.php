@@ -63,9 +63,8 @@ class Mobile_Builder_WCFM
             '_store_description',
         ];
 
-        if (
-            in_array($key, $accept) ||
-            0 == strpos($key, 'frego_mobile_builder')
+        if (in_array($key, $accept)
+            || 0 == strpos($key, 'frego_mobile_builder')
         ) {
             return update_user_meta($user_id, $key, $data);
         }
@@ -166,8 +165,7 @@ class Mobile_Builder_WCFM
                 $gross_sales    = 0.0;
                 $commission_ids = explode(',', $result->commission_ids);
 
-                if (
-                    apply_filters('wcfmmmp_gross_sales_respect_setting', true)
+                if (apply_filters('wcfmmmp_gross_sales_respect_setting', true)
                 ) {
                     $gross_sales = (float) $WCFMmp->wcfmmp_commission->wcfmmp_get_commission_meta_sum(
                         $commission_ids,
@@ -282,12 +280,8 @@ class Mobile_Builder_WCFM
                 as $order_amount_key => $order_amount_value
             ) {
                 $total_earned_commission[ $order_amount_key ] = $order_amount_value;
-                if (
-                    $admin_fee_mode &&
-                    isset(
-                        $total_gross_sales[ $order_amount_key ],
-                        $total_gross_sales[ $order_amount_key ][1]
-                    )
+                if ($admin_fee_mode
+                    && isset($total_gross_sales[ $order_amount_key ],                    $total_gross_sales[ $order_amount_key ][1])
                 ) {
                     $total_earned_commission[ $order_amount_key ][1] = round(
                         $total_gross_sales[ $order_amount_key ][1] -
@@ -302,11 +296,7 @@ class Mobile_Builder_WCFM
                 as $order_amount_key => $order_amount_value
             ) {
                 $total_earned_commission[ $order_amount_key ] = $order_amount_value;
-                if (
-                    isset(
-                        $total_gross_sales[ $order_amount_key ],
-                        $total_gross_sales[ $order_amount_key ][1]
-                    )
+                if (isset($total_gross_sales[ $order_amount_key ],                    $total_gross_sales[ $order_amount_key ][1])
                 ) {
                     $total_earned_commission[ $order_amount_key ][1] = round(
                         $total_earned_commission[ $order_amount_key ][1],
@@ -349,8 +339,7 @@ class Mobile_Builder_WCFM
             foreach ($results as $result) {
                 $paid_gross_sales = 0.0;
                 $commission_ids   = explode(',', $result->commission_ids);
-                if (
-                    apply_filters('wcfmmmp_gross_sales_respect_setting', true)
+                if (apply_filters('wcfmmmp_gross_sales_respect_setting', true)
                 ) {
                     $paid_gross_sales = (float) $WCFMmp->wcfmmp_commission->wcfmmp_get_commission_meta_sum(
                         $commission_ids,
@@ -409,11 +398,7 @@ class Mobile_Builder_WCFM
                 as $order_amount_key => $order_amount_value
             ) {
                 $total_paid_commission[ $order_amount_key ] = $order_amount_value;
-                if (
-                    isset(
-                        $paid_gross_sales[ $order_amount_key ],
-                        $paid_gross_sales[ $order_amount_key ][1]
-                    )
+                if (isset($paid_gross_sales[ $order_amount_key ],                    $paid_gross_sales[ $order_amount_key ][1])
                 ) {
                     $total_paid_commission[ $order_amount_key ][1] = round(
                         $paid_gross_sales[ $order_amount_key ][1] -
@@ -428,11 +413,7 @@ class Mobile_Builder_WCFM
                 as $order_amount_key => $order_amount_value
             ) {
                 $total_paid_commission[ $order_amount_key ] = $order_amount_value;
-                if (
-                    isset(
-                        $paid_gross_sales[ $order_amount_key ],
-                        $paid_gross_sales[ $order_amount_key ][1]
-                    )
+                if (isset($paid_gross_sales[ $order_amount_key ],                    $paid_gross_sales[ $order_amount_key ][1])
                 ) {
                     $total_paid_commission[ $order_amount_key ][1] = round(
                         $total_paid_commission[ $order_amount_key ][1],

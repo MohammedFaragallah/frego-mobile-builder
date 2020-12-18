@@ -15,9 +15,9 @@
      *
      * @version 3.5.0
      */
-if (! defined('ABSPATH')) {
-    exit();
-}
+  if (! defined('ABSPATH')) {
+      exit();
+  }
 
     $theme = isset($_GET['theme']) ? $_GET['theme'] : '';
 
@@ -29,7 +29,7 @@ if (! defined('ABSPATH')) {
         wc_get_checkout_url()
     );
     ?>
-	" enctype="multipart/form-data">
+    " enctype="multipart/form-data">
 
     <?php if ($checkout->get_checkout_fields()) { ?>
 

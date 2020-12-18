@@ -6,6 +6,9 @@
       "email": "o0frego0o@hotmail.com"
     }
   ],
+  "scripts": {
+    "pot": "wp i18n make-pot ."
+  },
   "require": {
     "firebase/php-jwt": "^5.0",
     "facebook/graph-sdk": "^5.7"

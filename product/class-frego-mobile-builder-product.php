@@ -79,7 +79,7 @@ class Mobile_Builder_Product
     /**
      * Get list products variable.
      *
-     * @param $request
+     * @param WP_REST_Request $request Request object.
      *
      * @return array|WP_Error|WP_REST_Response
      */
@@ -105,7 +105,7 @@ class Mobile_Builder_Product
     /**
      * Get products items.
      *
-     * @param $request
+     * @param WP_REST_Request $request Request object.
      *
      * @return array|WP_Error|WP_REST_Response
      */
@@ -180,10 +180,9 @@ class Mobile_Builder_Product
      */
     public function mbd_wcml_client_currency($client_currency)
     {
-        if (
-            isset($_GET['mobile']) &&
-            1 == $_GET['mobile'] &&
-            isset($_GET['currency'])
+        if (isset($_GET['mobile'])
+            && 1 == $_GET['mobile']
+            && isset($_GET['currency'])
         ) {
             $client_currency = $_GET['currency'];
         }
@@ -219,8 +218,8 @@ class Mobile_Builder_Product
 
     /**
      * @param $response
-     * @param mixed    $object
-     * @param mixed    $request
+     * @param mixed $object
+     * @param mixed $request
      *
      * @return mixed
      */
@@ -239,9 +238,8 @@ class Mobile_Builder_Product
         }
 
         global $woocommerce_wpml;
-        if (
-            ! empty($woocommerce_wpml->multi_currency) &&
-            ! empty($woocommerce_wpml->settings['currencies_order'])
+        if (! empty($woocommerce_wpml->multi_currency)
+            && ! empty($woocommerce_wpml->settings['currencies_order'])
         ) {
             $price = $response->data['price'];
 
@@ -297,9 +295,8 @@ class Mobile_Builder_Product
     ) {
         global $woocommerce_wpml;
 
-        if (
-            ! empty($woocommerce_wpml->multi_currency) &&
-            ! empty($woocommerce_wpml->settings['currencies_order'])
+        if (! empty($woocommerce_wpml->multi_currency)
+            && ! empty($woocommerce_wpml->settings['currencies_order'])
         ) {
             $product_data->data['multi-currency-prices'] = [];
 
