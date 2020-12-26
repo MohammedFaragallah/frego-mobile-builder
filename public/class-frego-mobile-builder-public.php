@@ -108,10 +108,10 @@ class Mobile_Builder_Public
             [
                 [
                     'methods'             => WP_REST_Server::CREATABLE,
-                    'callback'            => [ $review, 'create_item' ],
+                    'callback'            => [$review, 'create_item'],
                     'permission_callback' => '__return_true',
                     'args'                => array_merge(
-                        ([ $review, 'get_endpoint_args_for_item_schema' ])(
+                        ([$review, 'get_endpoint_args_for_item_schema'])(
                             WP_REST_Server::CREATABLE
                         ),
                         [
@@ -150,7 +150,7 @@ class Mobile_Builder_Public
                         ]
                     ),
                 ],
-                'schema' => [ $review, 'get_public_item_schema' ],
+                'schema' => [$review, 'get_public_item_schema'],
             ]
         );
 
@@ -160,16 +160,16 @@ class Mobile_Builder_Public
             [
                 [
                     'methods'             => WP_REST_Server::EDITABLE,
-                    'callback'            => [ $customer, 'update_item' ],
+                    'callback'            => [$customer, 'update_item'],
                     'permission_callback' => [
                         $this,
                         'update_item_permissions_check',
                     ],
-                    'args'                => ([ $customer, 'get_endpoint_args_for_item_schema' ])(
+                    'args'                => ([$customer, 'get_endpoint_args_for_item_schema'])(
                         WP_REST_Server::EDITABLE
                     ),
                 ],
-                'schema' => [ $customer, 'get_item_schema' ],
+                'schema' => [$customer, 'get_item_schema'],
             ]
         );
 
@@ -178,7 +178,7 @@ class Mobile_Builder_Public
             'token',
             [
                 'methods'             => WP_REST_Server::READABLE,
-                'callback'            => [ $this, 'app_token' ],
+                'callback'            => [$this, 'app_token'],
                 'permission_callback' => '__return_true',                'args' => array()
 
             ]
@@ -190,7 +190,7 @@ class Mobile_Builder_Public
             [
                 [
                     'methods'             => WP_REST_Server::CREATABLE,
-                    'callback'            => [ $this, 'login' ],
+                    'callback'            => [$this, 'login'],
                     'permission_callback' => '__return_true',
                     'args'                => [
                         'username' => [
@@ -205,7 +205,7 @@ class Mobile_Builder_Public
                         ],
                     ],
                 ],
-                'schema' => [ $this, 'get_token_schema' ],
+                'schema' => [$this, 'get_token_schema'],
             ]
         );
 
@@ -214,7 +214,7 @@ class Mobile_Builder_Public
             'logout',
             [
                 'methods'             => WP_REST_Server::READABLE,
-                'callback'            => [ $this, 'logout' ],
+                'callback'            => [$this, 'logout'],
                 'permission_callback' => '__return_true',                'args' => array()
 
             ]
@@ -225,9 +225,9 @@ class Mobile_Builder_Public
             'current',
             [
                 'methods'             => WP_REST_Server::READABLE,
-                'callback'            => [ $this, 'current' ],
+                'callback'            => [$this, 'current'],
                 'permission_callback' => '__return_true',
-                                'args' => array()
+                'args' => array()
 
             ]
         );
@@ -238,7 +238,7 @@ class Mobile_Builder_Public
             [
                 [
                     'methods'             => WP_REST_Server::CREATABLE,
-                    'callback'            => [ $this, 'login_facebook' ],
+                    'callback'            => [$this, 'login_facebook'],
                     'permission_callback' => '__return_true',
                     'args'                => [
                         'token' => [
@@ -248,7 +248,7 @@ class Mobile_Builder_Public
                         ],
                     ],
                 ],
-                'schema' => [ $this, 'get_token_schema' ],
+                'schema' => [$this, 'get_token_schema'],
             ]
         );
 
@@ -258,7 +258,7 @@ class Mobile_Builder_Public
             [
                 [
                     'methods'             => WP_REST_Server::CREATABLE,
-                    'callback'            => [ $this, 'login_google' ],
+                    'callback'            => [$this, 'login_google'],
                     'permission_callback' => '__return_true',
                     'args'                => [
                         'token' => [
@@ -268,7 +268,7 @@ class Mobile_Builder_Public
                         ],
                     ],
                 ],
-                'schema' => [ $this, 'get_token_schema' ],
+                'schema' => [$this, 'get_token_schema'],
             ]
         );
 
@@ -278,7 +278,7 @@ class Mobile_Builder_Public
             [
                 [
                     'methods'             => WP_REST_Server::CREATABLE,
-                    'callback'            => [ $this, 'login_apple' ],
+                    'callback'            => [$this, 'login_apple'],
                     'permission_callback' => '__return_true',
                     'args'                => [
                         'token' => [
@@ -288,7 +288,7 @@ class Mobile_Builder_Public
                         ],
                     ],
                 ],
-                'schema' => [ $this, 'get_token_schema' ],
+                'schema' => [$this, 'get_token_schema'],
             ]
         );
 
@@ -298,9 +298,9 @@ class Mobile_Builder_Public
             [
                 [
                     'methods'             => WP_REST_Server::CREATABLE,
-                    'callback'            => [ $user, 'create_item' ],
+                    'callback'            => [$user, 'create_item'],
                     'permission_callback' => function ($request) {
-                        $request->set_param('roles', [ 'customer' ]);
+                        $request->set_param('roles', ['customer']);
 
                         // METHOD 2: Be nice and provide an error message
                         // if (!current_user_can('create_users') && $request['roles'] !== array('subscriber')) {
@@ -318,7 +318,7 @@ class Mobile_Builder_Public
                         WP_REST_Server::CREATABLE
                     ),
                 ],
-                'schema' => [ $user, 'get_item_schema' ],
+                'schema' => [$user, 'get_item_schema'],
             ]
         );
 
@@ -327,7 +327,7 @@ class Mobile_Builder_Public
             'lost-password',
             [
                 'methods'             => WP_REST_Server::CREATABLE,
-                'callback'            => [ $this, 'retrieve_password' ],
+                'callback'            => [$this, 'retrieve_password'],
                 'permission_callback' => '__return_true',
                 'args'                => [
                     'user_login' => [
@@ -343,7 +343,7 @@ class Mobile_Builder_Public
             'settings',
             [
                 'methods'             => WP_REST_Server::READABLE,
-                'callback'            => [ $this, 'settings' ],
+                'callback'            => [$this, 'settings'],
                 'permission_callback' => '__return_true',                'args' => array()
 
             ]
@@ -354,7 +354,7 @@ class Mobile_Builder_Public
             'change-password',
             [
                 'methods'             => WP_REST_Server::CREATABLE,
-                'callback'            => [ $this, 'change_password' ],
+                'callback'            => [$this, 'change_password'],
                 'permission_callback' => '__return_true',
                 'args'                => [
                     'password_old' => [
@@ -376,7 +376,7 @@ class Mobile_Builder_Public
             'update-location',
             [
                 'methods'             => WP_REST_Server::CREATABLE,
-                'callback'            => [ $this, 'update_location' ],
+                'callback'            => [$this, 'update_location'],
                 'permission_callback' => '__return_true',                'args' => array()
 
             ]
@@ -387,7 +387,7 @@ class Mobile_Builder_Public
             'zones',
             [
                 'methods'             => WP_REST_Server::READABLE,
-                'callback'            => [ $this, 'zones' ],
+                'callback'            => [$this, 'zones'],
                 'permission_callback' => '__return_true',                'args' => array()
 
             ]
@@ -398,7 +398,7 @@ class Mobile_Builder_Public
             'get-continent-code-for-country',
             [
                 'methods'             => WP_REST_Server::READABLE,
-                'callback'            => [ $this, 'get_continent_code_for_country' ],
+                'callback'            => [$this, 'get_continent_code_for_country'],
                 'permission_callback' => '__return_true',                'args' => array()
 
             ]
@@ -415,7 +415,7 @@ class Mobile_Builder_Public
             'process_payment',
             [
                 'methods'             => WP_REST_Server::CREATABLE,
-                'callback'            => [ $this, 'process_payment' ],
+                'callback'            => [$this, 'process_payment'],
                 'permission_callback' => '__return_true',                'args' => array()
 
             ]
@@ -432,7 +432,7 @@ class Mobile_Builder_Public
             'check-phone-number',
             [
                 'methods'             => WP_REST_Server::CREATABLE,
-                'callback'            => [ $this, 'mbd_check_phone_number' ],
+                'callback'            => [$this, 'mbd_check_phone_number'],
                 'permission_callback' => '__return_true',                'args' => array()
 
             ]
@@ -449,7 +449,7 @@ class Mobile_Builder_Public
             'check-info',
             [
                 'methods'             => WP_REST_Server::CREATABLE,
-                'callback'            => [ $this, 'mbd_validate_user_info' ],
+                'callback'            => [$this, 'mbd_validate_user_info'],
                 'permission_callback' => '__return_true',                'args' => array()
 
             ]
@@ -462,6 +462,8 @@ class Mobile_Builder_Public
      * @author Ngoc Dang
      *
      * @param WP_REST_Request $request Request object.
+     *
+     * @return WP_REST_Response|WP_Error
      */
     public function mbd_check_phone_number($request)
     {
@@ -485,7 +487,7 @@ class Mobile_Builder_Public
                         'Your phone number already exist in database!',
                         'frego-mobile-builder'
                     ),
-                    [ 'status' => 400 ]
+                    ['status' => 400]
                 );
 
                 return $error;
@@ -511,7 +513,7 @@ class Mobile_Builder_Public
                     'Your phone number not exist in database!',
                     'frego-mobile-builder'
                 ),
-                [ 'status' => 400 ]
+                ['status' => 400]
             );
 
             return $error;
@@ -572,20 +574,23 @@ class Mobile_Builder_Public
         $template_name,
         $template_path
     ) {
-        if ('checkout/form-checkout.php' == $template_name
+        if (
+            'checkout/form-checkout.php' == $template_name
             && isset($_GET['mobile'])
         ) {
             return plugin_dir_path(__DIR__) .
                 'templates/checkout/form-checkout.php';
         }
 
-        if ('checkout/thankyou.php' == $template_name
+        if (
+            'checkout/thankyou.php' == $template_name
             && isset($_GET['mobile'])
         ) {
             return plugin_dir_path(__DIR__) . 'templates/checkout/thankyou.php';
         }
 
-        if ('checkout/form-pay.php' == $template_name
+        if (
+            'checkout/form-pay.php' == $template_name
             && isset($_GET['mobile'])
         ) {
             return plugin_dir_path(__DIR__) . 'templates/checkout/form-pay.php';
@@ -600,6 +605,8 @@ class Mobile_Builder_Public
      * @author Ngoc Dang
      *
      * @param null|WP_REST_Request $request Request object.
+     *
+     * @return WP_REST_Response|WP_Error
      */
     public function process_payment($request = null)
     {
@@ -613,14 +620,14 @@ class Mobile_Builder_Public
         $error = new WP_Error();
 
         // Perform Pre Checks
-        if (! class_exists('WooCommerce')) {
+        if (!class_exists('WooCommerce')) {
             $error->add(
                 400,
                 __(
                     'Failed to process payment. WooCommerce either missing or deactivated.',
                     'frego-mobile-builder'
                 ),
-                [ 'status' => 400 ]
+                ['status' => 400]
             );
 
             return $error;
@@ -629,7 +636,7 @@ class Mobile_Builder_Public
             $error->add(
                 401,
                 __("Order ID 'order_id' is required.", 'frego-mobile-builder'),
-                [ 'status' => 400 ]
+                ['status' => 400]
             );
 
             return $error;
@@ -641,12 +648,13 @@ class Mobile_Builder_Public
                     "Order ID 'order_id' is invalid. Order does not exist.",
                     'frego-mobile-builder'
                 ),
-                [ 'status' => 400 ]
+                ['status' => 400]
             );
 
             return $error;
         }
-        if ('pending' !== wc_get_order($order_id)->get_status()
+        if (
+            'pending' !== wc_get_order($order_id)->get_status()
             && 'failed' !== wc_get_order($order_id)->get_status()
         ) {
             $error->add(
@@ -657,7 +665,7 @@ class Mobile_Builder_Public
                         "', meaning it had already received a successful payment. Duplicate payments to the order is not allowed. The allow status it is either 'pending' or 'failed'. ",
                     'frego-mobile-builder'
                 ),
-                [ 'status' => 400 ]
+                ['status' => 400]
             );
 
             return $error;
@@ -669,7 +677,7 @@ class Mobile_Builder_Public
                     "Payment Method 'payment_method' is required.",
                     'frego-mobile-builder'
                 ),
-                [ 'status' => 400 ]
+                ['status' => 400]
             );
 
             return $error;
@@ -677,11 +685,11 @@ class Mobile_Builder_Public
 
         // Find Gateway
         $avaiable_gateways = WC()->payment_gateways->get_available_payment_gateways();
-        $gateway           = $avaiable_gateways[ $payment_method ];
+        $gateway           = $avaiable_gateways[$payment_method];
 
         if (empty($gateway)) {
             $all_gateways = WC()->payment_gateways->payment_gateways();
-            $gateway      = $all_gateways[ $payment_method ];
+            $gateway      = $all_gateways[$payment_method];
 
             if (empty($gateway)) {
                 $error->add(
@@ -692,7 +700,7 @@ class Mobile_Builder_Public
                             "' is missing.",
                         'frego-mobile-builder'
                     ),
-                    [ 'status' => 400 ]
+                    ['status' => 400]
                 );
 
                 return $error;
@@ -705,12 +713,12 @@ class Mobile_Builder_Public
                         "' exists, but is not available.",
                     'frego-mobile-builder'
                 ),
-                [ 'status' => 400 ]
+                ['status' => 400]
             );
 
             return $error;
         }
-        if (! has_filter('pre_process_' . $payment_method . '_payment')) {
+        if (!has_filter('pre_process_' . $payment_method . '_payment')) {
             $error->add(
                 407,
                 __(
@@ -721,7 +729,7 @@ class Mobile_Builder_Public
                         "' is not available.",
                     'frego-mobile-builder'
                 ),
-                [ 'status' => 400 ]
+                ['status' => 400]
             );
 
             return $error;
@@ -770,6 +778,8 @@ class Mobile_Builder_Public
 
     /**
      * @param WP_REST_Request $request Request object.
+     *
+     * @return WP_REST_Response|WP_Error
      */
     public function get_continent_code_for_country($request)
     {
@@ -815,11 +825,13 @@ class Mobile_Builder_Public
 
     /**
      * @param WP_REST_Request $request Request object.
+     *
+     * @return WP_REST_Response|WP_Error
      */
     public function change_password($request)
     {
         $current_user = wp_get_current_user();
-        if (! $current_user->exists()) {
+        if (!$current_user->exists()) {
             return new WP_Error(
                 'user_not_login',
                 __('Please login first.', 'frego-mobile-builder'),
@@ -864,7 +876,7 @@ class Mobile_Builder_Public
     {
         $current_user = wp_get_current_user();
 
-        if (! $current_user->exists()) {
+        if (!$current_user->exists()) {
             return new WP_Error(
                 'user_not_login',
                 __('Please login first.', 'frego-mobile-builder'),
@@ -883,6 +895,8 @@ class Mobile_Builder_Public
 
     /**
      * @param WP_REST_Request $request Request object.
+     *
+     * @return WP_REST_Response|WP_Error
      */
     public function settings($request)
     {
@@ -916,8 +930,9 @@ class Mobile_Builder_Public
                 ? get_woocommerce_currency()
                 : 'USD';
 
-            if (! empty($woocommerce_wpml->multi_currency)
-                && ! empty($woocommerce_wpml->settings['currencies_order'])
+            if (
+                !empty($woocommerce_wpml->multi_currency)
+                && !empty($woocommerce_wpml->settings['currencies_order'])
             ) {
                 $currencies = $woocommerce_wpml->multi_currency->get_currencies(
                     'include_default = true'
@@ -983,7 +998,7 @@ class Mobile_Builder_Public
         $user = get_user_by('login', $wp_auth_user);
 
         if ($user) {
-            return $this->generate_token($user, [ 'read_only' => true ]);
+            return $this->generate_token($user, ['read_only' => true]);
         }
 
         return new WP_Error(
@@ -1008,7 +1023,7 @@ class Mobile_Builder_Public
 
         $user_login = $request->get_param('user_login');
 
-        if (empty($user_login) || ! is_string($user_login)) {
+        if (empty($user_login) || !is_string($user_login)) {
             $errors->add(
                 'empty_username',
                 __(
@@ -1036,7 +1051,7 @@ class Mobile_Builder_Public
             return $errors;
         }
 
-        if (! $user_data) {
+        if (!$user_data) {
             $errors->add(
                 'invalidcombo',
                 __(
@@ -1140,8 +1155,9 @@ class Mobile_Builder_Public
             $user_data
         );
 
-        if ($message
-            && ! wp_mail($user_email, wp_specialchars_decode($title), $message)
+        if (
+            $message
+            && !wp_mail($user_email, wp_specialchars_decode($title), $message)
         ) {
             return new WP_Error(
                 'send_email',
@@ -1185,7 +1201,7 @@ class Mobile_Builder_Public
         $name  = $request->get_param('name');
 
         // Validate email
-        if (! is_email($email) || email_exists($email)) {
+        if (!is_email($email) || email_exists($email)) {
             return new WP_Error(
                 'email',
                 __(
@@ -1209,7 +1225,7 @@ class Mobile_Builder_Public
             );
         }
 
-        return [ 'message' => __('success!', 'frego-mobile-builder') ];
+        return ['message' => __('success!', 'frego-mobile-builder')];
     }
 
     public function getUrlContent($url)
@@ -1248,7 +1264,7 @@ class Mobile_Builder_Public
         $idToken = $request->get_param('idToken');
 
         $url  = 'https://oauth2.googleapis.com/tokeninfo?id_token=' . $idToken;
-        $data = [ 'idToken' => $idToken ];
+        $data = ['idToken' => $idToken];
 
         // use key 'http' even if you send the request to https://...
         $options = [
@@ -1267,7 +1283,7 @@ class Mobile_Builder_Public
             $error->add(
                 403,
                 __('Get Firebase user info error!', 'frego-mobile-builder'),
-                [ 'status' => 400 ]
+                ['status' => 400]
             );
 
             return $error;
@@ -1275,7 +1291,7 @@ class Mobile_Builder_Public
 
         // Email not exist
         $email = $result->email;
-        if (! $email) {
+        if (!$email) {
             return new WP_Error(
                 'email_not_exist',
                 __('User not provider email', 'frego-mobile-builder'),
@@ -1361,8 +1377,7 @@ class Mobile_Builder_Public
 
             list($headb64) = $tks;
 
-            if (null ===            ($header = JWT::jsonDecode(JWT::urlsafeB64Decode($headb64)))
-            ) {
+            if (null ===            ($header = JWT::jsonDecode(JWT::urlsafeB64Decode($headb64)))) {
                 return new WP_Error(
                     'error_login_apple',
                     __('Invalid header encoding', 'frego-mobile-builder'),
@@ -1372,7 +1387,7 @@ class Mobile_Builder_Public
                 );
             }
 
-            if (! isset($header->kid)) {
+            if (!isset($header->kid)) {
                 return new WP_Error(
                     'error_login_apple',
                     __(
@@ -1391,7 +1406,7 @@ class Mobile_Builder_Public
             $publicKey        = $publicKeyDetails['publicKey'];
             $alg              = $publicKeyDetails['alg'];
 
-            $payload = JWT::decode($identityToken, $publicKey, [ $alg ]);
+            $payload = JWT::decode($identityToken, $publicKey, [$alg]);
 
             if ($payload->sub !== $userIdentity) {
                 return new WP_Error(
@@ -1478,7 +1493,7 @@ class Mobile_Builder_Public
                 'app_id'                => FACEBOOK_APP_ID,
                 'app_secret'            => FACEBOOK_APP_SECRET,
                 'default_graph_version' => 'v2.10',
-            // 'default_access_token' => '{access-token}', // optional
+                // 'default_access_token' => '{access-token}', // optional
             ]
         );
 
@@ -1507,7 +1522,7 @@ class Mobile_Builder_Public
 
         // Email not exist
         $email = $me->getEmail();
-        if (! $email) {
+        if (!$email) {
             return new WP_Error(
                 'email_not_exist',
                 __('User not provider email', 'frego-mobile-builder'),
@@ -1606,7 +1621,7 @@ class Mobile_Builder_Public
     {
         wp_logout();
 
-        return [ 'success' => true ];
+        return ['success' => true];
     }
 
     /**
@@ -1631,7 +1646,7 @@ class Mobile_Builder_Public
             'data' => array_merge(
                 [
                     'user_id' => $user->data->ID,
-                    'user' => ["id"=>$user->data->ID],
+                    'user' => ["id" => $user->data->ID],
                 ],
                 $data
             ),
@@ -1644,7 +1659,7 @@ class Mobile_Builder_Public
     public function determine_current_user($user)
     {
         // Run only on REST API
-        if (! mobile_builder_is_rest_api_request()) {
+        if (!mobile_builder_is_rest_api_request()) {
             return $user;
         }
 
@@ -1668,14 +1683,14 @@ class Mobile_Builder_Public
     {
         // Get token on header
 
-        if (! $token) {
+        if (!$token) {
             $headers = $this->headers();
 
             if (isset($headers['authorization'])) {
                 $headers['Authorization'] = $headers['authorization'];
             }
 
-            if (! isset($headers['Authorization'])) {
+            if (!isset($headers['Authorization'])) {
                 return new WP_Error(
                     'no_auth_header',
                     __(
@@ -1694,7 +1709,7 @@ class Mobile_Builder_Public
                 $matches
             );
 
-            if (! $match) {
+            if (!$match) {
                 return new WP_Error(
                     'token_not_validate',
                     __('Token not validate format.', 'frego-mobile-builder'),
@@ -1709,7 +1724,7 @@ class Mobile_Builder_Public
 
         // decode token
         try {
-            $data = JWT::decode($token, $this->key, [ 'HS256' ]);
+            $data = JWT::decode($token, $this->key, ['HS256']);
 
             if ($data->iss != get_bloginfo('url')) {
                 return new WP_Error(
@@ -1723,7 +1738,7 @@ class Mobile_Builder_Public
                     ]
                 );
             }
-            if (! isset($data->data->user_id)) {
+            if (!isset($data->data->user_id)) {
                 return new WP_Error(
                     'id_not_found',
                     __(
@@ -1779,9 +1794,9 @@ class Mobile_Builder_Public
                     '-',
                     ucwords(strtolower(str_replace('_', ' ', substr($key, 5))))
                 );
-                $out[ $key ] = $value;
+                $out[$key] = $value;
             } else {
-                $out[ $key ] = $value;
+                $out[$key] = $value;
             }
         }
 
@@ -1803,7 +1818,7 @@ class Mobile_Builder_Public
             return new WP_Error(
                 'frego_mobile_builder',
                 __('Sorry, you cannot change info.', 'frego-mobile-builder'),
-                [ 'status' => rest_authorization_required_code() ]
+                ['status' => rest_authorization_required_code()]
             );
         }
 

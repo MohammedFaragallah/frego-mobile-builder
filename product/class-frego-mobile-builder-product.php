@@ -56,8 +56,8 @@ class Mobile_Builder_Product
             'products-distance',
             [
                 'methods'             => 'GET',
-                'callback'            => [ $this, 'get_items' ],
-                'permission_callback' => [ $products, 'get_items_permissions_check' ],
+                'callback'            => [$this, 'get_items'],
+                'permission_callback' => [$products, 'get_items_permissions_check'],
                 'args'                => array(),
 
             ]
@@ -68,7 +68,7 @@ class Mobile_Builder_Product
             'variable/(?P<product_id>[a-zA-Z0-9-]+)',
             [
                 'methods'             => 'GET',
-                'callback'            => [ $this, 'product_get_all_variable_data' ],
+                'callback'            => [$this, 'product_get_all_variable_data'],
                 'permission_callback' => '__return_true',
                 'args'                => array(),
 
@@ -81,7 +81,7 @@ class Mobile_Builder_Product
      *
      * @param WP_REST_Request $request Request object.
      *
-     * @return array|WP_Error|WP_REST_Response
+     * @return WP_REST_Response|WP_Error
      */
     public function product_get_all_variable_data($request)
     {
@@ -91,8 +91,8 @@ class Mobile_Builder_Product
         $variation_attributes_data  = [];
         $variation_attributes_label = [];
         foreach ($variation_attributes as $key => $attribute) {
-            $variation_attributes_result[ 'attribute_' . sanitize_title($key) ] = $attribute;
-            $variation_attributes_label[ 'attribute_' . sanitize_title($key) ]  = $key;
+            $variation_attributes_result['attribute_' . sanitize_title($key)] = $attribute;
+            $variation_attributes_label['attribute_' . sanitize_title($key)]  = $key;
         }
 
         return [
@@ -107,7 +107,7 @@ class Mobile_Builder_Product
      *
      * @param WP_REST_Request $request Request object.
      *
-     * @return array|WP_Error|WP_REST_Response
+     * @return WP_REST_Response|WP_Error
      */
     public function get_items($request)
     {
@@ -156,7 +156,7 @@ class Mobile_Builder_Product
                     $item['id'],
                     array_column($gmw_locations, 'object_id')
                 );
-                $item['distance_matrix'] = $distance_matrix[ $index ];
+                $item['distance_matrix'] = $distance_matrix[$index];
                 $data[]                  = $item;
             }
 
@@ -180,7 +180,8 @@ class Mobile_Builder_Product
      */
     public function mbd_wcml_client_currency($client_currency)
     {
-        if (isset($_GET['mobile'])
+        if (
+            isset($_GET['mobile'])
             && 1 == $_GET['mobile']
             && isset($_GET['currency'])
         ) {
@@ -238,18 +239,17 @@ class Mobile_Builder_Product
         }
 
         global $woocommerce_wpml;
-        if (! empty($woocommerce_wpml->multi_currency)
-            && ! empty($woocommerce_wpml->settings['currencies_order'])
+        if (
+            !empty($woocommerce_wpml->multi_currency)
+            && !empty($woocommerce_wpml->settings['currencies_order'])
         ) {
             $price = $response->data['price'];
 
             if ('grouped' == $type || 'variable' == $type) {
-                foreach (
-                    $woocommerce_wpml->settings['currencies_order']
-                    as $currency
-                ) {
+                foreach ($woocommerce_wpml->settings['currencies_order']
+                    as $currency) {
                     if ($currency != get_option('woocommerce_currency')) {
-                        $response->data['from-multi-currency-prices'][ $currency ]['price'] = $woocommerce_wpml->multi_currency->prices->raw_price_filter(
+                        $response->data['from-multi-currency-prices'][$currency]['price'] = $woocommerce_wpml->multi_currency->prices->raw_price_filter(
                             $price,
                             $currency
                         );
@@ -295,8 +295,9 @@ class Mobile_Builder_Product
     ) {
         global $woocommerce_wpml;
 
-        if (! empty($woocommerce_wpml->multi_currency)
-            && ! empty($woocommerce_wpml->settings['currencies_order'])
+        if (
+            !empty($woocommerce_wpml->multi_currency)
+            && !empty($woocommerce_wpml->settings['currencies_order'])
         ) {
             $product_data->data['multi-currency-prices'] = [];
 
@@ -306,10 +307,8 @@ class Mobile_Builder_Product
                 true
             );
 
-            foreach (
-                $woocommerce_wpml->settings['currencies_order']
-                as $currency
-            ) {
+            foreach ($woocommerce_wpml->settings['currencies_order']
+                as $currency) {
                 if ($currency != get_option('woocommerce_currency')) {
                     if ($custom_prices_on) {
                         $custom_prices = (array) $woocommerce_wpml->multi_currency->custom_prices->get_product_custom_prices(
@@ -317,15 +316,15 @@ class Mobile_Builder_Product
                             $currency
                         );
                         foreach ($custom_prices as $key => $price) {
-                            $product_data->data['multi-currency-prices'][ $currency ][ preg_replace('#^_#', '', $key) ] = $price;
+                            $product_data->data['multi-currency-prices'][$currency][preg_replace('#^_#', '', $key)] = $price;
                         }
                     } else {
-                        $product_data->data['multi-currency-prices'][ $currency ]['regular_price'] = $woocommerce_wpml->multi_currency->prices->raw_price_filter(
+                        $product_data->data['multi-currency-prices'][$currency]['regular_price'] = $woocommerce_wpml->multi_currency->prices->raw_price_filter(
                             $product_data->data['regular_price'],
                             $currency
                         );
-                        if (! empty($product_data->data['sale_price'])) {
-                            $product_data->data['multi-currency-prices'][ $currency ]['sale_price'] = $woocommerce_wpml->multi_currency->prices->raw_price_filter(
+                        if (!empty($product_data->data['sale_price'])) {
+                            $product_data->data['multi-currency-prices'][$currency]['sale_price'] = $woocommerce_wpml->multi_currency->prices->raw_price_filter(
                                 $product_data->data['sale_price'],
                                 $currency
                             );
@@ -393,7 +392,7 @@ class Mobile_Builder_Product
                 );
             }
 
-            $options[ $key ] = $term;
+            $options[$key] = $term;
         }
 
         $response->data['options'] = $options;
@@ -420,7 +419,7 @@ class Mobile_Builder_Product
             $image_urls = [];
             foreach ($_wp_additional_image_sizes as $size => $value) {
                 $image_info                                = wp_get_attachment_image_src($image['id'], $size);
-                $response->data['images'][ $key ][ $size ] = $image_info[0];
+                $response->data['images'][$key][$size] = $image_info[0];
             }
         }
 
@@ -447,7 +446,7 @@ class Mobile_Builder_Product
                 $response->data['image']['id'],
                 $size
             );
-            $response->data['image'][ $size ] = $image_info[0];
+            $response->data['image'][$size] = $image_info[0];
         }
 
         return $response;

@@ -1,16 +1,200 @@
 <?php
 
-// use \Firebase\JWT\JWT;
-// use NextendSocialLogin;
+use Automattic\WooCommerce\Blocks\Package;
+use Automattic\WooCommerce\Blocks\Domain\Services\ExtendRestApi;
+use Automattic\WooCommerce\Blocks\StoreApi\Schemas\CartItemSchema;
 
 add_filter('woocommerce_store_api_disable_nonce_check', '__return_true');
 
 add_filter(
     'jwt_auth_whitelist',
     function ($endpoints) {
-        return [ '/wp-json/*', '/wp-admin/*', '/*' ];
+        return ['/wp-json/*', '/wp-admin/*', '/*'];
     }
 );
+
+add_filter('woocommerce_rest_prepare_product_cat', 'prepare_product_cat_response', 10, 3);
+
+/**
+ * @param WP_REST_Response $response
+ * @param WC_Webhook $object
+ * @param WP_REST_Request $request
+ */
+function prepare_product_cat_response($response, $object, $request)
+{
+
+    $data = $response->get_data();
+
+    $content = get_term_meta($object->term_id, 'cat_meta');
+
+    $data['top_content'] = do_shortcode($content[0]['cat_header']);
+    $data['bottom_content'] = do_shortcode($content[0]['cat_footer']);
+
+    $response->set_data($data);
+
+    return $response;
+}
+
+
+// Add the shipping class to the bottom of each item in the cart
+add_filter('woocommerce_cart_item_name', 'shipping_class_in_item_name', 20, 3);
+function shipping_class_in_item_name($item_name, $cart_item, $cart_item_key)
+{
+    // If the page is NOT the Shopping Cart or the Checkout, then return the product title (otherwise continue...)
+    if (!(is_cart() || is_checkout())) {
+        return $item_name;
+    }
+
+    $product             = $cart_item['data']; // Get the WC_Product object instance
+    $shipping_class_id   = $product->get_shipping_class_id(); // Shipping class ID
+    $shipping_class_term = get_term(
+        $shipping_class_id,
+        'product_shipping_class'
+    );
+
+    // Return default product title (in case of no Shipping Class)
+    if (empty($shipping_class_id)) {
+        return $item_name;
+    }
+
+    // If the Shipping Class slug is either of these, then add a prefix and suffix to the output
+    if (
+        'flat-1995-per' == $shipping_class_term->slug
+        || 'flat-4999-per' == $shipping_class_term->slug
+    ) {
+        $prefix = '$';
+        $suffix = 'each';
+    }
+
+    $label = __('Shipping Class', 'woocommerce');
+
+    // Output the Product Title and the new code which wraps the Shipping Class name
+    return $item_name . '<br><p class="item-shipping_class" style="margin:0.25em 0 0; font-size: 0.875em;"><em>' . $label . ': </em>' . $prefix . $shipping_class_term->name . ' ' . $suffix . '</p>';
+}
+
+add_action(
+    'rest_api_init',
+    function () {
+
+        register_rest_route(
+            'frego/v1',
+            '/setting',
+            [
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => function ($request) {
+                    var_dump(is_user_logged_in());
+                    $responses = [];
+
+                    foreach ($request->get_params() as $key => $value) {
+                        $responses += [$key => get_option($key)];
+                    }
+
+                    return $responses;
+                },
+                'permission_callback' => '__return_true',
+                'args'                => array(),
+
+            ]
+        );
+    },
+    10
+);
+
+
+// Enable the option show in rest
+add_filter('acf/rest_api/field_settings/show_in_rest', '__return_true');
+
+// Enable the option edit in rest
+add_filter('acf/rest_api/field_settings/edit_in_rest', '__return_true');
+
+add_action('init', function () {
+    $extend_instance = Package::container()->get(ExtendRestApi::class);
+
+    $extend_instance->register_endpoint_data(
+        array(
+            'endpoint'        =>            CartItemSchema::IDENTIFIER,
+            'namespace'       => 'store',
+            'schema_callback' => function () {
+                return [
+                    'id' => [
+                        'description' => 'store ID',
+                        'type' => 'integer',
+                    ],
+                    'first_name' => [
+                        'description' => 'store first name',
+                        'type' => 'string',
+                    ],
+                    'last_name' => [
+                        'description' => 'store last name',
+                        'type' => 'string',
+                    ],
+                    'shop_name' => [
+                        'description' => 'shop name',
+                        'type' => 'string',
+                    ],
+                    'shop_url' => [
+                        'description' => 'shop url',
+                        'format' => 'url',
+                        'type' => 'string',
+                    ],
+                    'avatar' => [
+                        'description' => 'shop avatar',
+                        'type' => 'string',
+                    ],
+                    'banner' => [
+                        'description' => 'shop banner',
+                        'format' => 'url',
+                        'type' => 'string',
+                    ],
+                    'address' => [
+                        'description' => 'shop address',
+                        'type' => 'object',
+                        'properties' => [
+                            'street_1' => [
+                                'description' => 'shop street_1',
+                                'type' => 'string',
+                            ],
+                            'street_2' => [
+                                'description' => 'shop street_2',
+                                'type' => 'string',
+                            ],
+                            'city' => [
+                                'description' => 'shop city',
+                                'type' => 'string',
+                            ],
+                            'zip' => [
+                                'description' => 'shop zip',
+                                'type' => 'string',
+                            ],
+                            'state' => [
+                                'description' => 'shop state',
+                                'type' => 'string',
+                            ],
+                            'country' => [
+                                'description' => 'shop country',
+                                'type' => 'string',
+                            ],
+                        ]
+                    ],
+                ];
+            },
+            'data_callback'   => function ($cart_item) {
+                $vendor = dokan_get_vendor_by_product($cart_item['id']);
+
+                return [
+                    'id'         => $vendor->get_id(),
+                    'first_name' => $vendor->get_first_name(),
+                    'last_name'  => $vendor->get_last_name(),
+                    'shop_name'  => $vendor->get_shop_name(),
+                    'shop_url'   => $vendor->get_shop_url(),
+                    'avatar'     => $vendor->get_avatar(),
+                    'banner'     => $vendor->get_banner(),
+                    'address'     => $vendor->get_address(),
+                ];
+            },
+        )
+    );
+});
 
 // function check_headers()
 // {
@@ -119,41 +303,6 @@ add_filter(
 // return get_fields($ID);
 // }
 
-// Add the shipping class to the bottom of each item in the cart
-add_filter('woocommerce_cart_item_name', 'shipping_class_in_item_name', 20, 3);
-function shipping_class_in_item_name($item_name, $cart_item, $cart_item_key)
-{
-    // If the page is NOT the Shopping Cart or the Checkout, then return the product title (otherwise continue...)
-    if (! (is_cart() || is_checkout())) {
-        return $item_name;
-    }
-
-    $product             = $cart_item['data']; // Get the WC_Product object instance
-    $shipping_class_id   = $product->get_shipping_class_id(); // Shipping class ID
-    $shipping_class_term = get_term(
-        $shipping_class_id,
-        'product_shipping_class'
-    );
-
-    // Return default product title (in case of no Shipping Class)
-    if (empty($shipping_class_id)) {
-        return $item_name;
-    }
-
-    // If the Shipping Class slug is either of these, then add a prefix and suffix to the output
-    if ('flat-1995-per' == $shipping_class_term->slug
-        || 'flat-4999-per' == $shipping_class_term->slug
-    ) {
-        $prefix = '$';
-        $suffix = 'each';
-    }
-
-    $label = __('Shipping Class', 'woocommerce');
-
-    // Output the Product Title and the new code which wraps the Shipping Class name
-    return $item_name . '<br><p class="item-shipping_class" style="margin:0.25em 0 0; font-size: 0.875em;"><em>' . $label . ': </em>' . $prefix . $shipping_class_term->name . ' ' . $suffix . '</p>';
-}
-
 // function generate_token($request)
 // {
 // $id = $request->get_param('id');
@@ -225,28 +374,7 @@ add_action(
 
         // ));
 
-        register_rest_route(
-            'frego/v1',
-            '/setting',
-            [
-                'methods'             => WP_REST_Server::READABLE,
-                'callback'            => function ($request) {
-                    var_dump(is_user_logged_in());
-                    $responses = [];
-
-                    foreach ($request->get_params() as $key => $value) {
-                        $responses += [ $key => get_option($key) ];
-                    }
-
-                    return $responses;
-                },
-                'permission_callback' => '__return_true',
-                'args'                => array(),
-
-            ]
-        );
-
-    // register_rest_route(
+        // register_rest_route(
         // 'frego/v1',
         // '/nonce',
         // [
@@ -319,9 +447,3 @@ add_action(
 // }
 
 // endif;
-
-// Enable the option show in rest
-add_filter('acf/rest_api/field_settings/show_in_rest', '__return_true');
-
-// Enable the option edit in rest
-add_filter('acf/rest_api/field_settings/edit_in_rest', '__return_true');

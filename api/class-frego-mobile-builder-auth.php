@@ -55,7 +55,7 @@ class Mobile_Builder_Auth
             'auto-login',
             [
                 'methods'             => WP_REST_Server::READABLE,
-                'callback'            => [ $this, 'auto_login' ],
+                'callback'            => [$this, 'auto_login'],
                 'permission_callback' => '__return_true',
                 'args'                => array(),
             ]
@@ -66,6 +66,8 @@ class Mobile_Builder_Auth
      * Set user login.
      *
      * @param WP_REST_Request $request Request object.
+     *
+     * @return WP_REST_Response|WP_Error
      */
     public function auto_login($request)
     {

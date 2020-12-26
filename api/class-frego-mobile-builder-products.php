@@ -55,8 +55,8 @@ class Mobile_Builder_Products
             'min-max-prices',
             [
                 'methods'             => WP_REST_Server::READABLE,
-                'callback'            => [ $this, 'get_min_max_prices' ],
-                'permission_callback' => [ $product, 'get_items_permissions_check' ],
+                'callback'            => [$this, 'get_min_max_prices'],
+                'permission_callback' => [$product, 'get_items_permissions_check'],
                 'args'                => array(),
 
             ]
@@ -67,8 +67,8 @@ class Mobile_Builder_Products
             'term-product-counts',
             [
                 'methods'             => WP_REST_Server::READABLE,
-                'callback'            => [ $this, 'get_filtered_term_product_counts' ],
-                'permission_callback' => [ $product, 'get_items_permissions_check' ],
+                'callback'            => [$this, 'get_filtered_term_product_counts'],
+                'permission_callback' => [$product, 'get_items_permissions_check'],
                 'args'                => array(),
 
             ]
@@ -77,6 +77,8 @@ class Mobile_Builder_Products
 
     /**
      * @param WP_REST_Request $request Request object.
+     *
+     * @return WP_REST_Response|WP_Error
      */
     public function get_min_max_prices($request)
     {
@@ -90,7 +92,7 @@ class Mobile_Builder_Products
                 [
                     'taxonomy' => 'product_cat',
                     'field'    => 'cat_id',
-                    'terms'    => [ $request['category'] ],
+                    'terms'    => [$request['category']],
                 ],
             ];
         }
@@ -146,13 +148,15 @@ class Mobile_Builder_Products
 
     /**
      * @param WP_REST_Request $request Request object.
+     *
+     * @return WP_REST_Response|WP_Error
      */
     public function get_filtered_term_product_counts($request)
     {
         global $wpdb;
 
         $term_ids = wp_list_pluck(
-            get_terms($request['taxonomy'], [ 'hide_empty' => '1' ]),
+            get_terms($request['taxonomy'], ['hide_empty' => '1']),
             'term_id'
         );
 
@@ -174,7 +178,7 @@ class Mobile_Builder_Products
             $tax_query[] = [
                 'taxonomy' => 'product_cat',
                 'field'    => 'cat_id',
-                'terms'    => [ $request['category'] ],
+                'terms'    => [$request['category']],
             ];
         }
 
