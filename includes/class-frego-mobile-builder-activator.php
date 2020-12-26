@@ -20,22 +20,20 @@
  * @subpackage Frego_Mobile_Builder/includes
  * @author     Mohammed Faragallah <o0frego0o@hotmail.com>
  */
-class Frego_Mobile_Builder_Activator
-{
+class Frego_Mobile_Builder_Activator {
 
-    /**
-     * Short Description. (use period)
-     *
-     * Long Description.
-     *
-     * @since    1.0.0
-     */
-    public static function activate()
-    {
-        // Require parent plugin
-        if (!is_plugin_active('jwt-auth/jwt-auth.php') and current_user_can('activate_plugins')) {
-            // Stop activation redirect and show error
-            wp_die('Sorry, but this plugin requires the <a href="wordpress.org/plugins/jwt-auth">Jwt Auth Plugin</a> to be installed and active. <br><a href="' . admin_url('plugins.php') . '">&laquo; Return to Plugins</a>');
-        }
-    }
+	/**
+	 * Short Description. (use period)
+	 *
+	 * Long Description.
+	 *
+	 * @since    1.0.0
+	 */
+	public static function activate() {
+		// Require parent plugin
+		if ( ! is_plugin_active( 'jwt-auth/jwt-auth.php' ) and current_user_can( 'activate_plugins' ) ) {
+			// Stop activation redirect and show error
+			wp_die( 'Sorry, but this plugin requires the <a href="wordpress.org/plugins/jwt-auth">Jwt Auth Plugin</a> to be installed and active. <br><a href="' . admin_url( 'plugins.php' ) . '">&laquo; Return to Plugins</a>' );
+		}
+	}
 }

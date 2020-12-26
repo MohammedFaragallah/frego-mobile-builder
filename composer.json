@@ -9,13 +9,13 @@
     }
   ],
   "scripts": {
-    "pot": "wp i18n make-pot ."
+    "pot": "wp i18n make-pot .",
+    "formatss": "phpcbf --standard=WordPress . --extensions=php --ignore=vendor/"
   },
   "require": {
-    "firebase/php-jwt": "^5.0",
-    "facebook/graph-sdk": "^5.7"
+    "facebook/graph-sdk": "^5.7.0"
   },
   "require-dev": {
-    "php-stubs/woocommerce-stubs": "^4.7"
+    "php-stubs/woocommerce-stubs": "^4.7.1"
   }
 }

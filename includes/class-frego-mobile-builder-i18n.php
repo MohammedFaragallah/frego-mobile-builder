@@ -24,22 +24,24 @@
  * @subpackage Frego_Mobile_Builder/includes
  * @author     Mohammed Faragallah <o0frego0o@hotmail.com>
  */
-class Frego_Mobile_Builder_i18n
-{
+class Frego_Mobile_Builder_i18n {
 
 
-    /**
-     * Load the plugin text domain for translation.
-     *
-     * @since    1.0.0
-     */
-    public function load_plugin_textdomain()
-    {
+	/**
+	 * Load the plugin text domain for translation.
+	 *
+	 * @since    1.0.0
+	 */
+	public function load_plugin_textdomain() {
 
-        load_plugin_textdomain(
-            'frego-mobile-builder',
-            false,
-            dirname(dirname(plugin_basename(__FILE__))) . '/languages/'
-        );
-    }
+		load_plugin_textdomain(
+			'frego-mobile-builder',
+			false,
+			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
+		);
+
+	}
+
+
+
 }

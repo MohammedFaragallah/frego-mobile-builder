@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-12-26T09:45:54+01:00\n"
+"POT-Creation-Date: 2020-12-26T20:13:51+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: frego-mobile-builder\n"
@@ -29,4 +29,69 @@ msgstr ""
 
 #. Author of the plugin
 msgid "Mohammed Faragallah"
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:336
+msgid "Please login first."
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:382
+msgid "<strong>ERROR</strong>: Enter a username or email address."
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:392
+#: public/class-frego-mobile-builder-public.php:410
+msgid "<strong>ERROR</strong>: There is no account with that username or email address."
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:442
+msgid "Someone has requested a password reset for the following account:"
+msgstr ""
+
+#. translators: %s: site name
+#: public/class-frego-mobile-builder-public.php:448
+msgid "Site Name: %s"
+msgstr ""
+
+#. translators: %s: user login
+#: public/class-frego-mobile-builder-public.php:452
+msgid "Username: %s"
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:455
+msgid "If this was a mistake, just ignore this email and nothing will happen."
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:460
+msgid "To reset your password, visit the following address:"
+msgstr ""
+
+#. translators: Password reset notification email subject. %s: Site title
+#: public/class-frego-mobile-builder-public.php:475
+msgid "[%s] Password Reset"
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:517
+msgid "Possible reason: your host may have disabled the mail() function."
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:582
+msgid "Get Firebase user info error!"
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:594
+#: public/class-frego-mobile-builder-public.php:695
+msgid "User not provider email"
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:676
+msgid "Graph returned an error: "
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:681
+msgid "Facebook SDK returned an error: "
+msgstr ""
+
+#: public/class-frego-mobile-builder-public.php:798
+msgid "Sorry, you cannot change info."
 msgstr ""
