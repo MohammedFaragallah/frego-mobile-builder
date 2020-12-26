@@ -1,5 +1,7 @@
 {
-  "name": "o0fre/frego-mobile-builder",
+  "name": "frego/frego-mobile-builder",
+  "type": "wordpress-plugin",
+  "license": "MIT",
   "authors": [
     {
       "name": "Mohammed Faragallah",

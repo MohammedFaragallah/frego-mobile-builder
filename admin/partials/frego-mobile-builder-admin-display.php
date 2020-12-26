@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Provide a public-facing view for the plugin
+ * Provide a admin area view for the plugin
  *
- * This file is used to markup the public-facing aspects of the plugin.
+ * This file is used to markup the admin-facing aspects of the plugin.
  *
  * @link       github.com/MohammedFaragallah
  * @since      1.0.0
  *
  * @package    Frego_Mobile_Builder
- * @subpackage Frego_Mobile_Builder/public/partials
+ * @subpackage Frego_Mobile_Builder/admin/partials
  */
 ?>
 
