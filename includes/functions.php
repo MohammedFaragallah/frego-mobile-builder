@@ -197,6 +197,33 @@ add_action(
 	}
 );
 
+add_filter( 'jwt_auth_do_custom_auth', 'jwt_auth_custom_auth_next_end', 10, 4 );
+
+/**
+ * @param WP_Error $custom_auth_error
+ * @param string   $username The username.
+ * @param string   $password The password.
+ * @param mixed    $custom_auth The custom auth data (if any).
+ *
+ * @see https://nextendweb.com/nextend-social-login-docs/backend-developer/
+ *
+ * @return WP_User|WP_Error $user Returns WP_User object if success, or WP_Error if failed.
+ */
+function jwt_auth_custom_auth_next_end( $custom_auth_error, $username, $password, $custom_auth ) {
+	try {
+		parse_str( $custom_auth, $params );
+
+		$provider_id  = $params['provider'];
+		$access_token = $params['access_token'];
+
+		$provider = NextendSocialLogin::$enabledProviders[ $provider_id ];
+
+		return $provider->findUserByAccessToken( $access_token );
+	} catch ( \Throwable $th ) {
+		return $custom_auth_error;
+	}
+}
+
 // function check_headers()
 // {
 // $headers =   array_change_key_case(getallheaders(), CASE_LOWER);
