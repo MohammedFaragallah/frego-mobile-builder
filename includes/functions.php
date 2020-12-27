@@ -179,7 +179,7 @@ add_action(
 					);
 				},
 				'data_callback'   => function ( $cart_item ) {
-					$vendor = dokan_get_vendor_by_product( $cart_item['id'] );
+					$vendor = dokan_get_vendor_by_product( $cart_item['product_id'] );
 
 					return array(
 						'id'         => $vendor->get_id(),
