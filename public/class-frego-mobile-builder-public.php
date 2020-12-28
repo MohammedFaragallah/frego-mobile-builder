@@ -25,6 +25,12 @@ use JWTAuth\Auth;
 class Frego_Mobile_Builder_Public {
 
 
+
+
+
+
+
+
 	/**
 	 * The ID of this plugin.
 	 *
@@ -373,23 +379,11 @@ class Frego_Mobile_Builder_Public {
 		$user_login = $request->get_param( 'user_login' );
 
 		if ( empty( $user_login ) || ! is_string( $user_login ) ) {
-			$errors->add(
-				'empty_username',
-				__(
-					'<strong>ERROR</strong>: Enter a username or email address.',
-					'frego-mobile-builder'
-				)
-			);
+			$errors->add( 'empty_username', __( '<strong>Error</strong>: The email field is empty.' ) );
 		} elseif ( strpos( $user_login, '@' ) ) {
 			$user_data = get_user_by( 'email', trim( wp_unslash( $user_login ) ) );
 			if ( empty( $user_data ) ) {
-				$errors->add(
-					'invalid_email',
-					__(
-						'<strong>ERROR</strong>: There is no account with that username or email address.',
-						'frego-mobile-builder'
-					)
-				);
+				$errors->add( 'invalid_email', __( '<strong>Error</strong>: There is no account with that username or email address.' ) );
 			}
 		} else {
 			$login     = trim( $user_login );
@@ -401,13 +395,7 @@ class Frego_Mobile_Builder_Public {
 		}
 
 		if ( ! $user_data ) {
-			$errors->add(
-				'invalidcombo',
-				__(
-					'<strong>ERROR</strong>: There is no account with that username or email address.',
-					'frego-mobile-builder'
-				)
-			);
+			$errors->add( 'invalidcombo', __( '<strong>Error</strong>: There is no account with that username or email address.' ) );
 
 			return $errors;
 		}
