@@ -15,7 +15,5 @@
   "require": {
     "facebook/graph-sdk": "^5.7"
   },
-  "require-dev": {
-    "php-stubs/woocommerce-stubs": "^4.7.1"
-  }
+  "require-dev": {}
 }
