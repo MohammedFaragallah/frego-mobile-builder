@@ -224,6 +224,180 @@ function jwt_auth_custom_auth_next_end( $custom_auth_error, $username, $password
 	}
 }
 
+add_filter( 'woocommerce_rest_prepare_product_object', 'prepare_product_response', 10, 3 );
+
+/**
+ * @param WP_REST_Response $response
+ * @param WC_PRODUCT       $object
+ * @param WP_REST_Request  $request
+ */
+function prepare_product_response( $response, $product, $request ) {
+	global $wc_cpdf;
+
+	$data = $response->get_data();
+
+	$data['top_content']    =
+		do_shortcode( $wc_cpdf->get_value( $data['id'], '_top_content' ) );
+	$data['bottom_content'] =
+		do_shortcode( $wc_cpdf->get_value( $data['id'], '_bottom_content' ) );
+
+	$data['attributes_data'] = get_attributes( $product );
+	$data['variations_data'] = get_variations( $product );
+
+	$data['add_to_cart'] = array(
+		'text'        => $product->add_to_cart_text(),
+		'description' => $product->add_to_cart_description(),
+		'url'         => $product->add_to_cart_url(),
+	);
+
+	$response->set_data( $data );
+
+	return $response;
+}
+
+
+/**
+ * Returns true if the given attribute is valid.
+ *
+ * @param mixed $attribute Object or variable to check.
+ * @return boolean
+ */
+function filter_valid_attribute( $attribute ) {
+	return is_a( $attribute, '\WC_Product_Attribute' );
+}
+
+/**
+ * Returns true if the given attribute is valid and used for variations.
+ *
+ * @param mixed $attribute Object or variable to check.
+ * @return boolean
+ */
+function filter_variation_attribute( $attribute ) {
+	return filter_valid_attribute( $attribute ) && $attribute->get_variation();
+}
+
+
+/**
+ * Prepare an attribute term for the response.
+ *
+ * @param string $name Attribute term name.
+ * @param int    $id Attribute term ID.
+ * @param string $slug Attribute term slug.
+ * @return object
+ */
+function prepare_product_attribute_value( $name, $id = 0, $slug = '' ) {
+	return (object) array(
+		'id'   => (int) $id,
+		'name' => $name,
+		'slug' => $slug ? $slug : $name,
+	);
+}
+
+/**
+ * Prepare an attribute term for the response.
+ *
+ * @param \WP_Term $term Term object.
+ * @return object
+ */
+function prepare_product_attribute_taxonomy_value( \WP_Term $term ) {
+	return prepare_product_attribute_value( $term->name, $term->term_id, $term->slug );
+}
+
+/**
+ * Get list of product attributes and attribute terms.
+ *
+ * @param \WC_Product $product Product instance.
+ * @return array
+ */
+function get_attributes( \WC_Product $product ) {
+	$attributes = array_filter( $product->get_attributes(), 'filter_valid_attribute' );
+	$return     = array();
+
+	foreach ( $attributes as $attribute_slug => $attribute ) {
+		// Only visible and variation attributes will be exposed by this API.
+		if ( ! $attribute->get_visible() || ! $attribute->get_variation() ) {
+			continue;
+		}
+		$return[] = (object) array(
+			'id'             => $attribute->get_id(),
+			'name'           => wc_attribute_label( $attribute->get_name(), $product ),
+			'taxonomy'       => $attribute->is_taxonomy() ? $attribute->get_name() : null,
+			'has_variations' => true === $attribute->get_variation(),
+			'terms'          => $attribute->is_taxonomy() ? array_map( 'prepare_product_attribute_taxonomy_value', $attribute->get_terms() ) : array_map( 'prepare_product_attribute_value', $attribute->get_options() ),
+		);
+	}
+
+	return $return;
+}
+
+/**
+ * Get variation IDs and attributes from the DB.
+ *
+ * @param \WC_Product $product Product instance.
+ * @returns array
+ */
+function get_variations( \WC_Product $product ) {
+	if ( ! $product->is_type( 'variable' ) ) {
+		return array();
+	}
+	global $wpdb;
+
+	$variation_ids               = $product->get_visible_children();
+	$attributes                  = array_filter( $product->get_attributes(), 'filter_variation_attribute' );
+	$default_variation_meta_data = array_reduce(
+		$attributes,
+		function ( $defaults, $attribute ) use ( $product ) {
+			$meta_key              = wc_variation_attribute_name( $attribute->get_name() );
+			$defaults[ $meta_key ] = array(
+				'name'  => wc_attribute_label( $attribute->get_name(), $product ),
+				'value' => null,
+			);
+			return $defaults;
+		},
+		array()
+	);
+
+	// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
+	$variation_meta_data = $wpdb->get_results(
+		"
+			SELECT post_id as variation_id, meta_key as attribute_key, meta_value as attribute_value
+			FROM {$wpdb->postmeta}
+			WHERE post_id IN (" . implode( ',', array_map( 'esc_sql', $variation_ids ) ) . ")
+			AND meta_key IN ('" . implode( "','", array_map( 'esc_sql', array_keys( $default_variation_meta_data ) ) ) . "')
+		"
+	);
+	// phpcs:enable
+
+	$attributes_by_variation = array_reduce(
+		$variation_meta_data,
+		function ( $values, $data ) {
+			$values[ $data->variation_id ][ $data->attribute_key ] = $data->attribute_value;
+			return $values;
+		},
+		array_fill_keys( $variation_ids, array() )
+	);
+
+	$variations = array();
+
+	foreach ( $variation_ids as $variation_id ) {
+		$attribute_data = $default_variation_meta_data;
+
+		foreach ( $attributes_by_variation[ $variation_id ] as $meta_key => $meta_value ) {
+			if ( '' !== $meta_value ) {
+				$attribute_data[ $meta_key ]['value'] = $meta_value;
+			}
+		}
+
+		$variations[] = (object) array(
+			'id'         => $variation_id,
+			'attributes' => array_values( $attribute_data ),
+		);
+	}
+
+	return $variations;
+}
+
+
 // function check_headers()
 // {
 // $headers =   array_change_key_case(getallheaders(), CASE_LOWER);
